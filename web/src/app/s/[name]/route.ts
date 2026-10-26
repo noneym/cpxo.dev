@@ -1,13 +1,12 @@
-// Short, stable links for the signed iOS Shortcuts: /s/send and /s/get
-// redirect to the latest GitHub release asset (signed on a macOS runner).
-const FILES: Record<string, string> = {
-  send: "cpxo-send-to-windows.shortcut",
-  get: "cpxo-get-from-windows.shortcut",
-};
+// /s/send and /s/get: stable links to the signed iOS Shortcut files in public/s/.
+import { SHORTCUT_FILES, signedShortcutsAvailable } from "@/lib/shortcuts";
 
 export async function GET(_req: Request, ctx: { params: Promise<{ name: string }> }) {
   const { name } = await ctx.params;
-  const file = FILES[name.replace(/\.shortcut$/, "")];
+  const file = SHORTCUT_FILES[name.replace(/\.shortcut$/, "") as keyof typeof SHORTCUT_FILES];
   if (!file) return Response.json({ error: "unknown shortcut" }, { status: 404 });
-  return Response.redirect(`https://github.com/noneym/cpxo.dev/releases/latest/download/${file}`, 302);
+  if (!signedShortcutsAvailable()) {
+    return Response.json({ error: "signed shortcut files are not published yet; see /docs/ios for manual setup" }, { status: 404 });
+  }
+  return Response.redirect(new URL(`/s/${file}`, _req.url), 302);
 }
