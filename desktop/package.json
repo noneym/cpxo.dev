@@ -1,0 +1,47 @@
+{
+  "name": "cpxo-desktop",
+  "version": "0.1.0",
+  "description": "cpxo desktop: clipboard sync and file upload for Windows",
+  "main": "src/main/index.js",
+  "private": true,
+  "author": "cpxo.dev",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "icons": "node scripts/icons.js",
+    "dist": "electron-builder --win nsis"
+  },
+  "devDependencies": {
+    "electron": "^38.0.0",
+    "electron-builder": "^26.0.12",
+    "png-to-ico": "^2.1.8",
+    "sharp": "^0.33.5"
+  },
+  "build": {
+    "appId": "dev.cpxo.desktop",
+    "productName": "cpxo",
+    "artifactName": "cpxo-setup-${version}.${ext}",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "src/**/*",
+      "assets/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "icon": "build/icon.ico"
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "artifactName": "cpxo-setup-${version}.${ext}",
+      "shortcutName": "cpxo",
+      "deleteAppDataOnUninstall": false
+    }
+  }
+}

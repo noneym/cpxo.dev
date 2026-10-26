@@ -1,0 +1,70 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int        @id @default(autoincrement())
+  email        String     @unique @db.VarChar(191)
+  passwordHash String     @db.VarChar(255)
+  createdAt    DateTime   @default(now())
+  sessions     Session[]
+  tokens       ApiToken[]
+  clips        Clip[]
+  files        File[]
+}
+
+model Session {
+  id        String   @id @db.VarChar(64)
+  userId    Int
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model ApiToken {
+  id         Int       @id @default(autoincrement())
+  userId     Int
+  token      String    @unique @db.VarChar(64)
+  name       String    @db.VarChar(64)
+  lastUsedAt DateTime?
+  createdAt  DateTime  @default(now())
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Clip {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  text      String   @db.MediumText
+  source    String   @default("unknown") @db.VarChar(16)
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, id])
+}
+
+model File {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  code      String   @unique @db.VarChar(16)
+  name      String   @db.VarChar(255)
+  size      BigInt   @default(0)
+  mime      String   @default("application/octet-stream") @db.VarChar(128)
+  objectKey String   @db.VarChar(255)
+  status    String   @default("ready") @db.VarChar(16)
+  downloads Int      @default(0)
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+}

@@ -1,0 +1,82 @@
+<!doctype html><html><head><meta charset="utf-8"><title>cpxo logo</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#0B0D10;--panel:#14171C;--line:#242931;--fog:#9AA3AD;--paper:#F3F2EC;--lime:#D6FF3F;--coral:#FF6B5B}
+*{box-sizing:border-box;margin:0}
+body{background:var(--ink);color:var(--paper);font-family:"Space Grotesk",system-ui;padding:20px}
+.board{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,290px);gap:18px;max-width:1400px;margin:auto}
+.p{background:var(--panel);border:1px solid var(--line);border-radius:14px;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.lab{position:absolute;top:14px;left:16px;font:500 11px "JetBrains Mono";letter-spacing:.12em;color:var(--fog);text-transform:uppercase}
+.num{position:absolute;bottom:12px;right:16px;font:400 11px "JetBrains Mono";color:var(--fog)}
+.word{font-weight:700;letter-spacing:-.06em;line-height:1}
+.cover{grid-column:span 2}
+.cover .lock{display:flex;align-items:center;gap:34px}
+.cover svg{width:150px;height:150px}
+.cover .word{font-size:112px}
+.cover .word i{font-style:normal;color:var(--lime)}
+.grid{background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:30px 30px}
+.icons{display:flex;gap:28px;align-items:flex-end}
+.ios{width:120px;height:120px;border-radius:28px;background:var(--lime);display:flex;align-items:center;justify-content:center}
+.ios svg,.win svg{width:88px;height:88px}
+.win{width:120px;height:120px;border-radius:10px;background:var(--ink);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--lime)}
+.tag{font-size:40px;font-weight:700;letter-spacing:-.04em;line-height:1.05;padding:0 48px}
+.tag span{color:var(--lime)}
+.sw{display:flex;gap:12px}
+.sw div{width:84px;height:200px;border-radius:10px;display:flex;align-items:flex-end;padding:10px;font:400 10px "JetBrains Mono"}
+.alts{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;width:100%;height:100%}
+.alts div{display:flex;align-items:center;justify-content:center}
+.alts svg{width:70px;height:70px}
+.alts .word{font-size:34px}
+.light{background:var(--paper);color:var(--ink)}
+.cmd{position:absolute;bottom:26px;left:48px;font:500 15px "JetBrains Mono";color:var(--fog)}
+.cmd b{color:var(--lime);font-weight:500}
+</style></head><body>
+<div class="board">
+ <div class="p cover"><span class="lab">01 — logo lockup</span>
+  <div class="lock">
+   <svg viewBox="0 0 100 100"><rect x="10" y="14" width="80" height="78" rx="20" fill="#D6FF3F"/><rect x="34" y="6" width="32" height="14" rx="7" fill="#0B0D10" stroke="#D6FF3F" stroke-width="4"/><path d="M34 36 L50 53 L34 70" fill="none" stroke="#0B0D10" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M66 36 L50 53 L66 70" fill="none" stroke="#0B0D10" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/></svg>
+   <div class="word">cp<i>x</i>o</div>
+  </div>
+  <div class="cmd"><b>$</b> curl -T file.zip cpxo.dev</div>
+  <span class="num">cpxo.dev</span></div>
+
+ <div class="p grid"><span class="lab">02 — construction</span>
+  <svg viewBox="0 0 100 100" style="width:240px;height:240px">
+   <circle cx="50" cy="53" r="40" fill="none" stroke="#FF6B5B" stroke-width=".5" stroke-dasharray="2 2"/>
+   <line x1="50" y1="0" x2="50" y2="100" stroke="#FF6B5B" stroke-width=".5"/>
+   <line x1="0" y1="53" x2="100" y2="53" stroke="#FF6B5B" stroke-width=".5"/>
+   <line x1="20" y1="23" x2="80" y2="83" stroke="#FF6B5B" stroke-width=".5" stroke-dasharray="2 2"/>
+   <line x1="80" y1="23" x2="20" y2="83" stroke="#FF6B5B" stroke-width=".5" stroke-dasharray="2 2"/>
+   <rect x="10" y="14" width="80" height="78" rx="20" fill="none" stroke="#9AA3AD" stroke-width="1.5"/>
+   <rect x="34" y="6" width="32" height="14" rx="7" fill="none" stroke="#9AA3AD" stroke-width="1.5"/>
+   <path d="M34 36 L50 53 L34 70" fill="none" stroke="#D6FF3F" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+   <path d="M66 36 L50 53 L66 70" fill="none" stroke="#D6FF3F" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+  <span class="num">clipboard + &gt;&lt; = exchange</span></div>
+
+ <div class="p"><span class="lab">03 — app icons</span>
+  <div class="icons">
+   <div class="ios"><svg viewBox="0 0 100 100"><rect x="34" y="6" width="32" height="14" rx="7" fill="#0B0D10"/><path d="M34 36 L50 53 L34 70" fill="none" stroke="#0B0D10" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M66 36 L50 53 L66 70" fill="none" stroke="#0B0D10" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+   <div class="win"><svg viewBox="0 0 100 100"><rect x="34" y="6" width="32" height="14" rx="7" fill="currentColor"/><path d="M34 36 L50 53 L34 70" fill="none" stroke="currentColor" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M66 36 L50 53 L66 70" fill="none" stroke="currentColor" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+  </div><span class="num">iOS shortcut · Windows tray</span></div>
+
+ <div class="p"><span class="lab">04 — essence</span>
+  <div class="tag">Copy here.<br><span>Paste anywhere.</span></div><span class="num">04</span></div>
+
+ <div class="p"><span class="lab">05 — color</span>
+  <div class="sw">
+   <div style="background:#0B0D10;border:1px solid #242931;color:#9AA3AD">ink<br>0B0D10</div>
+   <div style="background:#D6FF3F;color:#0B0D10">signal<br>D6FF3F</div>
+   <div style="background:#F3F2EC;color:#0B0D10">paper<br>F3F2EC</div>
+   <div style="background:#FF6B5B;color:#0B0D10">coral<br>FF6B5B</div>
+  </div><span class="num">05</span></div>
+
+ <div class="p" style="padding:0"><span class="lab" style="z-index:2">06 — variants</span>
+  <div class="alts">
+   <div style="color:#F3F2EC"><svg viewBox="0 0 100 100"><rect x="12" y="16" width="76" height="74" rx="18" fill="none" stroke="currentColor" stroke-width="6"/><rect x="36" y="9" width="28" height="12" rx="6" fill="currentColor"/><path d="M35 37 L50 53 L35 69" fill="none" stroke="currentColor" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/><path d="M65 37 L50 53 L65 69" fill="none" stroke="currentColor" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+   <div class="light"><svg viewBox="0 0 100 100" style="color:#0B0D10"><rect x="12" y="16" width="76" height="74" rx="18" fill="none" stroke="currentColor" stroke-width="6"/><rect x="36" y="9" width="28" height="12" rx="6" fill="currentColor"/><path d="M35 37 L50 53 L35 69" fill="none" stroke="currentColor" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/><path d="M65 37 L50 53 L65 69" fill="none" stroke="currentColor" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+   <div class="word" style="color:#F3F2EC">cp<span style="color:#D6FF3F">&gt;&lt;</span>o</div>
+   <div class="light word">cpxo</div>
+  </div></div>
+</div>
+</body></html>

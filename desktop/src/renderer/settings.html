@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' file:; style-src 'self' file:; img-src 'self' file: data:;">
+  <title>cpxo settings</title>
+  <link rel="stylesheet" href="settings.css">
+</head>
+<body>
+  <header class="top">
+    <img class="mark" src="../../assets/mark.svg" alt="" width="28" height="28">
+    <div class="title">
+      <h1>cpxo</h1>
+      <span class="sub" id="version"></span>
+    </div>
+  </header>
+
+  <main>
+    <section class="group">
+      <label class="field">
+        <span class="label">Server URL</span>
+        <input id="serverUrl" type="url" class="mono" spellcheck="false" placeholder="https://cpxo.dev" autocomplete="off">
+      </label>
+
+      <label class="field">
+        <span class="label">API token</span>
+        <div class="row">
+          <input id="token" type="password" class="mono" spellcheck="false" placeholder="cpx_..." autocomplete="off">
+          <button id="toggleToken" type="button" class="ghost" title="Show token">Show</button>
+        </div>
+      </label>
+
+      <div class="row between">
+        <button id="test" type="button" class="secondary">Test</button>
+        <span id="testResult" class="status"></span>
+      </div>
+      <p class="hint">Create a token on the <a href="#" id="dashboardLink">dashboard</a>.</p>
+    </section>
+
+    <section class="group">
+      <label class="check"><input id="syncClipboard" type="checkbox"><span>Sync clipboard with my phone</span></label>
+      <label class="check"><input id="notifications" type="checkbox"><span>Show notifications</span></label>
+      <label class="check"><input id="launchAtLogin" type="checkbox"><span>Launch at login</span></label>
+      <label class="check"><input id="contextMenu" type="checkbox"><span>Add "Upload to cpxo" to the Explorer right-click menu</span></label>
+      <p class="hint" id="devHint" hidden>Launch at login is applied only in the installed app.</p>
+    </section>
+
+    <section class="group">
+      <div id="drop" class="drop" tabindex="0" role="button" aria-label="Drop files to upload">
+        <span class="drop-title">Drop files here to upload</span>
+        <span class="drop-sub">or <button id="pick" type="button" class="link">choose a file</button>. The link is copied when done.</span>
+      </div>
+      <ul id="uploads" class="uploads"></ul>
+    </section>
+  </main>
+
+  <footer class="bottom">
+    <button id="openLog" type="button" class="ghost">Open log</button>
+    <span id="saveStatus" class="status"></span>
+    <button id="save" type="button" class="primary">Save</button>
+  </footer>
+
+  <script src="settings.js"></script>
+</body>
+</html>
