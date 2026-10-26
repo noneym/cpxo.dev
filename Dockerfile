@@ -1,13 +1,13 @@
 # cpxo.dev web + API
 # Base images use floating tags on purpose: every build picks up the latest
 # Node 22 / Alpine security patches, and `apk upgrade` refreshes OS packages.
-FROM node:22-alpine AS deps
+FROM node:26-alpine AS deps
 WORKDIR /app/web
 COPY web/package.json web/package-lock.json ./
 COPY web/prisma ./prisma
 RUN npm ci
 
-FROM node:22-alpine AS build
+FROM node:26-alpine AS build
 WORKDIR /app
 COPY --from=deps /app/web/node_modules ./web/node_modules
 COPY web ./web
@@ -17,13 +17,13 @@ ENV NEXT_TELEMETRY_DISABLED=1
 RUN npx prisma generate && npm run build
 
 # Small, self-contained Prisma CLI used only for `db push` at container start.
-FROM node:22-alpine AS prisma-cli
+FROM node:26-alpine AS prisma-cli
 WORKDIR /tools
 COPY web/package.json /tmp/web-package.json
 RUN PRISMA_VERSION=$(node -p "require('/tmp/web-package.json').devDependencies.prisma.replace(/^[\^~]/,'')") \
  && npm init -y >/dev/null && npm i --no-audit --no-fund prisma@"$PRISMA_VERSION"
 
-FROM node:22-alpine AS run
+FROM node:26-alpine AS run
 RUN apk upgrade --no-cache
 WORKDIR /app
 ENV NODE_ENV=production NEXT_TELEMETRY_DISABLED=1 PORT=3000 HOSTNAME=0.0.0.0
