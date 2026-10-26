@@ -23,6 +23,10 @@ export default async function IosDoc() {
       {signed ? (
         <Step n={1} title="Add the two Shortcuts">
           <p>Open these on your iPhone and tap <strong>Add Shortcut</strong>. They are signed, so iOS installs them directly.</p>
+          <p>
+            <strong>Send to Windows</strong> sends whatever is on the clipboard: text becomes a clip, a copied photo or file is uploaded and its link becomes the clip (and is copied back to your iPhone).
+            It also appears in the Share Sheet, so you can share a photo or a file straight from Photos or Files.
+          </p>
           <div className="flex flex-wrap gap-3">
             {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
             <a href="/s/send" className="btn btn-primary" download>Add: Send to Windows</a>
@@ -49,8 +53,9 @@ export default async function IosDoc() {
         <Actions
           items={[
             "<strong>Get Clipboard</strong>",
-            `<strong>Get Contents of URL</strong>. URL: <code>${base}/api/clip?t=${T}</code>. Tap the arrow to expand: Method <strong>POST</strong>, Request Body <strong>File</strong>, pick the <strong>Clipboard</strong> variable. Add header <code>Content-Type</code> = <code>text/plain</code> and <code>X-Source</code> = <code>ios</code>.`,
-            "<strong>Show Notification</strong> with text <em>Sent to Windows</em> (optional).",
+            `<strong>Get Contents of URL</strong>. URL: <code>${base}/api/drop?t=${T}</code>. Tap the arrow to expand: Method <strong>POST</strong>, Request Body <strong>File</strong>, pick the <strong>Clipboard</strong> variable. Add header <code>X-Source</code> = <code>ios</code>. Text becomes a clip; a photo or file is uploaded and the link is returned.`,
+            "<strong>Copy to Clipboard</strong> with the <strong>Contents of URL</strong> variable (so a file link lands on your iPhone clipboard too).",
+            "<strong>Show Notification</strong> with the <strong>Contents of URL</strong> variable (optional).",
           ]}
         />
         <p>Add it to the Home Screen or the Share Sheet (Shortcut settings, toggle <strong>Show in Share Sheet</strong>) and you can send any selected text straight from Safari too.</p>

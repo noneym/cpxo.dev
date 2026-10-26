@@ -32,6 +32,15 @@ Latest clipboard entry.
 - Default response: `200` with `text/plain; charset=utf-8` body = the text. Headers `X-Clip-Id`, `X-Clip-Source`, `X-Clip-At`.
 - `204` when the user has no clips yet.
 
+### `POST /api/drop`
+One endpoint for the iOS Shortcut. The request body decides what happens:
+
+- `text/*`, JSON `{ text }` or form `text=`: stored as a clipboard entry; response is the text.
+- anything else (`image/jpeg`, `video/quicktime`, `application/pdf`, ...): uploaded like `/up`, the share link is stored as a clipboard entry, response is the link. File name from `X-File-Name` / `?name=` or generated (`photo-20261026-143000.jpg`).
+- `application/octet-stream`: sniffed; small valid UTF-8 is treated as text.
+
+Response is `text/plain` (200 for text, 201 for uploads). `X-Source` header as for `/api/clip`.
+
 ### `GET /api/clip/history`
 Clipboard history, newest first. Up to `MAX_CLIPS` entries (default 10000) are kept per account.
 

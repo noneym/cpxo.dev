@@ -2,7 +2,7 @@
 
 `build.py` generates the two Shortcuts as unsigned `.shortcut` files (binary plists):
 
-- `cpxo-send-to-windows.shortcut`: Get Clipboard, POST to `/api/clip`, notification
+- `cpxo-send-to-windows.shortcut`: Share Sheet input or Get Clipboard, POST to `/api/drop` (text -> clip, photo/file -> upload + link), Copy to Clipboard, notification
 - `cpxo-get-from-windows.shortcut`: GET `/api/clip`, Copy to Clipboard, notification
 
 Both read the token from the Shortcuts app folder (`cpxo/token.txt`, file service "Shortcuts", not "iCloud Drive": that one opens the Files picker) and ask for it on the first run.

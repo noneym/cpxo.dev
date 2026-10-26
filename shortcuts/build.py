@@ -33,6 +33,10 @@ def var(name):
     return {"Type": "Variable", "VariableName": name}
 
 
+def shortcut_input():
+    return {"Type": "ExtensionInput"}
+
+
 def output(uid, name):
     return {"Type": "ActionOutput", "OutputUUID": uid, "OutputName": name}
 
@@ -96,8 +100,8 @@ def token_block():
     ]
 
 
-def api_url():
-    s = f"{BASE}/api/clip?t=￼"
+def api_url(path="/api/clip"):
+    s = f"{BASE}{path}?t=￼"
     return text(s, {len(s) - 1: var("token")})
 
 
@@ -109,7 +113,10 @@ def workflow(actions, glyph, color, accepts_input):
         "WFWorkflowIcon": {"WFWorkflowIconStartColor": color, "WFWorkflowIconGlyphNumber": glyph},
         "WFWorkflowImportQuestions": [],
         "WFWorkflowTypes": ["NCWidget", "WatchKit", "ActionExtension"] if accepts_input else ["NCWidget", "WatchKit"],
-        "WFWorkflowInputContentItemClasses": ["WFStringContentItem", "WFURLContentItem"] if accepts_input else [],
+        "WFWorkflowInputContentItemClasses": [
+            "WFStringContentItem", "WFURLContentItem", "WFImageContentItem", "WFGenericFileContentItem",
+            "WFPDFContentItem", "WFAVAssetContentItem", "WFRichTextContentItem",
+        ] if accepts_input else [],
         "WFWorkflowHasShortcutInputVariables": accepts_input,
         "WFWorkflowHasOutputFallback": False,
         "WFWorkflowOutputContentItemClasses": [],
@@ -118,26 +125,46 @@ def workflow(actions, glyph, color, accepts_input):
 
 
 def send_to_windows():
+    """Sends the clipboard (or whatever was shared to the Shortcut) to /api/drop.
+    Text becomes a clip; a photo or file is uploaded and its link becomes the clip.
+    The response (text or link) is copied back to the clipboard."""
     clip_uid = str(uuid.uuid4()).upper()
+    dl_uid = str(uuid.uuid4()).upper()
+    group = str(uuid.uuid4()).upper()
     actions = token_block() + [
+        # payload = Shortcut Input when invoked from the Share Sheet, else the clipboard
+        action(
+            "is.workflow.actions.conditional",
+            GroupingIdentifier=group,
+            WFControlFlowMode=0,
+            WFCondition=100,
+            WFInput={"Type": "Variable", "Variable": attachment(shortcut_input())},
+        ),
+        action("is.workflow.actions.setvariable", WFVariableName="payload", WFInput=attachment(shortcut_input())),
+        action("is.workflow.actions.conditional", GroupingIdentifier=group, WFControlFlowMode=1),
         action("is.workflow.actions.getclipboard", UUID=clip_uid),
+        action("is.workflow.actions.setvariable", WFVariableName="payload", WFInput=attachment(output(clip_uid, "Clipboard"))),
+        action("is.workflow.actions.conditional", GroupingIdentifier=group, WFControlFlowMode=2),
+        # no Content-Type header on purpose: Shortcuts sets it from the payload (text/plain, image/jpeg, ...)
         action(
             "is.workflow.actions.downloadurl",
-            WFURL=api_url(),
+            UUID=dl_uid,
+            WFURL=api_url("/api/drop"),
             WFHTTPMethod="POST",
             WFHTTPBodyType="File",
-            WFRequestVariable=attachment(output(clip_uid, "Clipboard")),
+            WFRequestVariable=attachment(var("payload")),
             ShowHeaders=True,
-            WFHTTPHeaders=headers({"Content-Type": "text/plain; charset=utf-8", "X-Source": "ios"}),
+            WFHTTPHeaders=headers({"X-Source": "ios"}),
         ),
+        action("is.workflow.actions.setclipboard", WFInput=attachment(output(dl_uid, "Contents of URL"))),
         action(
             "is.workflow.actions.notification",
             WFNotificationActionTitle="cpxo",
-            WFNotificationActionBody=text("Sent to Windows: ￼", {17: output(clip_uid, "Clipboard")}),
+            WFNotificationActionBody=text("Sent: ￼", {6: output(dl_uid, "Contents of URL")}),
             WFNotificationActionSound=False,
         ),
     ]
-    return workflow(actions, glyph=59511, color=4292093695, accepts_input=False)
+    return workflow(actions, glyph=59511, color=4292093695, accepts_input=True)
 
 
 def get_from_windows():
