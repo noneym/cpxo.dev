@@ -31,6 +31,11 @@ export async function POST(req: Request) {
   if (Buffer.byteLength(text) > config.maxClipBytes)
     return Response.json({ error: "clip too large (max 512 KB)" }, { status: 413 });
 
+  // Same text as the latest entry: do not duplicate (periodic phone automations resend the clipboard).
+  const latest = await prisma.clip.findFirst({ where: { userId: user.id }, orderBy: { id: "desc" } });
+  if (latest && latest.text === text) {
+    return Response.json({ id: latest.id, createdAt: latest.createdAt, source: latest.source, duplicate: true }, { status: 200 });
+  }
   const clip = await prisma.clip.create({ data: { userId: user.id, text, source } });
   // trim history to MAX_CLIPS entries (bounded delete per request)
   const old = await prisma.clip.findMany({

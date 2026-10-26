@@ -73,10 +73,21 @@ export default async function IosDoc() {
         <p>The response is plain text, exactly what Windows last copied. If nothing was ever copied, the request returns empty.</p>
       </Step>
 
-      <Step n={4} title="Make it one tap">
+      <Step n={4} title="Make it one tap, or automatic-ish">
         <p>
-          Add both Shortcuts as widgets on the Lock Screen or Home Screen, or trigger them with the Action Button on iPhone 15 Pro and later.
-          A <strong>Back Tap</strong> gesture (Settings, Accessibility, Touch, Back Tap) works well for <strong>Send to Windows</strong>.
+          iOS does not let any app or Shortcut watch the clipboard in the background, so there is no fully automatic sync on the phone. These get close:
+        </p>
+        <Actions
+          items={[
+            "<strong>Back Tap</strong>: Settings, Accessibility, Touch, Back Tap, Double Tap, pick <em>Send to Windows</em>. Copy, tap the back of the phone twice, done.",
+            "<strong>Action Button</strong> (iPhone 15 Pro and later) or a Lock Screen widget for either Shortcut.",
+            "<strong>Automation on app close</strong>: Shortcuts, Automation, <em>App</em>, choose Safari, Notes, Messages (whatever you copy from), <em>Is Closed</em>, run <em>Send to Windows</em>, turn on <em>Run Immediately</em>. Whatever is on the clipboard when you leave the app is sent.",
+            "<strong>Automation on a timer</strong>: Shortcuts, Automation, <em>Time of Day</em>, repeat every 15 minutes, run <em>Send to Windows</em>. The server ignores a clip identical to the last one, so this does not flood your history.",
+            "For automations, set Settings, Shortcuts, <strong>Paste from Other Apps</strong> to <em>Allow</em>, otherwise iOS asks for permission every run.",
+          ]}
+        />
+        <p>
+          If you also use a Mac: Apple&apos;s Universal Clipboard already moves copies from the iPhone to the Mac. Paste once on the Mac and the cpxo Mac app forwards it to Windows.
         </p>
       </Step>
 

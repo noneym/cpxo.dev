@@ -62,7 +62,7 @@ export async function POST(req: Request) {
     }
     if (!text.trim()) return plain("empty clipboard", 400);
     if (Buffer.byteLength(text) > config.maxClipBytes) return plain("clip too large", 413);
-    await prisma.clip.create({ data: { userId: user.id, text, source: src } });
+    await saveTextClip(user.id, text, src);
     return plain(text);
   }
 
@@ -86,7 +86,7 @@ export async function POST(req: Request) {
     const magic = sniffMime(sniffed.head);
     if (sniffed.text !== null && !magic) {
       if (!sniffed.text.trim()) return plain("empty clipboard", 400);
-      await prisma.clip.create({ data: { userId: user.id, text: sniffed.text, source: src } });
+      await saveTextClip(user.id, sniffed.text, src);
       return plain(sniffed.text);
     }
     body = sniffed.stream;
@@ -104,6 +104,13 @@ export async function POST(req: Request) {
     const err = e as Error & { status?: number };
     return plain(err.message, err.status ?? 500);
   }
+}
+
+/** Stores a text clip unless it equals the latest one (periodic automations resend the clipboard). */
+async function saveTextClip(userId: number, text: string, source: string) {
+  const latest = await prisma.clip.findFirst({ where: { userId }, orderBy: { id: "desc" }, select: { text: true } });
+  if (latest && latest.text === text) return;
+  await prisma.clip.create({ data: { userId, text, source } });
 }
 
 /** Reads up to `limit` bytes; returns the text when the whole body is small valid UTF-8, else a stream replaying everything. */
