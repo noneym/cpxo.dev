@@ -1,5 +1,5 @@
 // Two-way clipboard sync.
-//  - polls the Windows clipboard every 500 ms and pushes changes to POST /api/clip
+//  - polls the local clipboard every 500 ms and pushes changes to POST /api/clip
 //  - polls GET /api/clip?since=<lastId>&format=json every 2 s and applies clips
 //    that came from other sources
 // Network failures back off exponentially (2 s .. 60 s) and never throw.
@@ -13,6 +13,17 @@ const log = require('./logger');
 const SOURCE = process.platform === 'darwin' ? 'mac' : 'windows';
 
 const LOCAL_POLL_MS = 500;
+
+/** clipboard.readText() returns a string on Electron <= 44 and a Promise from 45 on. */
+async function readClipText() {
+  const v = await clipboard.readText();
+  return typeof v === 'string' ? v : '';
+}
+/** clipboard.writeText() may also be async on newer Electron. */
+async function writeClipText(text) {
+  await clipboard.writeText(text);
+}
+
 const REMOTE_POLL_MS = 2000;
 const MAX_BACKOFF_MS = 60000;
 const MAX_TEXT_BYTES = 512 * 1024;
@@ -45,9 +56,14 @@ class ClipboardSync extends EventEmitter {
     this.running = true;
     this.backoffMs = 0;
     this.primed = this.store.get('lastClipId') > 0;
-    try { this.lastLocalText = clipboard.readText(); } catch (_) { this.lastLocalText = ''; }
     log.info(`clipboard: sync started, lastClipId=${this.store.get('lastClipId')}`);
-    this.scheduleLocal();
+    readClipText()
+      .catch(() => '')
+      .then((t) => {
+        if (!this.running) return;
+        this.lastLocalText = t;
+        this.scheduleLocal();
+      });
     this.scheduleRemote(0);
   }
 
@@ -73,10 +89,10 @@ class ClipboardSync extends EventEmitter {
     this.localTimer = setTimeout(() => this.tickLocal(), LOCAL_POLL_MS);
   }
 
-  tickLocal() {
+  async tickLocal() {
     if (!this.running) return;
     try {
-      const text = clipboard.readText();
+      const text = await readClipText();
       if (text !== this.lastLocalText) {
         this.lastLocalText = text;
         if (text && text.trim() && text !== this.lastSetText) {
@@ -152,13 +168,13 @@ class ClipboardSync extends EventEmitter {
     }
   }
 
-  applyRemote(clip) {
+  async applyRemote(clip) {
     const text = clip.text || '';
     if (!text) return;
     try {
       this.lastSetText = text;
       this.lastLocalText = text;
-      clipboard.writeText(text);
+      await writeClipText(text);
       log.info(`clipboard: applied clip id=${clip.id} from ${clip.source}`);
       this.emit('received', clip);
     } catch (err) {

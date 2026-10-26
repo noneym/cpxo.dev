@@ -239,7 +239,7 @@ async function pasteFromPhone() {
       return;
     }
     sync.markOwnWrite(clip.text);
-    clipboard.writeText(clip.text);
+    await clipboard.writeText(clip.text);
     if (typeof clip.id === 'number') sync.rememberId(clip.id);
     onClipReceived(clip);
   } catch (err) {
@@ -303,7 +303,7 @@ async function uploadOne(filePath) {
       },
     });
     sync.markOwnWrite(result.url);
-    clipboard.writeText(result.url);
+    await clipboard.writeText(result.url);
     notify('Link copied', result.url, () => shell.openExternal(result.url));
     sendToSettings('upload:done', { name, path: filePath, url: result.url, size: result.size });
   } catch (err) {

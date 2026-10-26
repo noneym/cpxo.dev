@@ -1,6 +1,6 @@
 {
   "name": "cpxo-desktop",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "cpxo desktop: clipboard sync and file upload for Windows and macOS",
   "main": "src/main/index.js",
   "private": true,
