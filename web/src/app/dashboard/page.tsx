@@ -21,9 +21,10 @@ export default async function DashboardPage() {
             <h1 className="text-3xl font-bold tracking-[-0.03em] md:text-4xl">Dashboard</h1>
             <p className="mt-1 text-fog">{user.email}</p>
           </div>
-          <div className="flex gap-2 text-sm">
-            <Link href="/docs/ios" className="btn btn-ghost h-10">iPhone setup</Link>
+          <div className="flex flex-wrap gap-2 text-sm">
+            <Link href="/docs/ios" className="btn btn-ghost h-10">iPhone</Link>
             <Link href="/docs/windows" className="btn btn-ghost h-10">Windows app</Link>
+            <Link href="/docs/mac" className="btn btn-ghost h-10">Mac app</Link>
             <Link href="/docs/cli" className="btn btn-ghost h-10">Shell</Link>
           </div>
         </div>

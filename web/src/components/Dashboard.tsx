@@ -130,7 +130,7 @@ export function Dashboard({ appUrl, initialTokens }: { appUrl: string; initialTo
   return (
     <div className="mt-10 grid gap-10 lg:grid-cols-12">
       {/* Tokens + quick commands */}
-      <section className="lg:col-span-5">
+      <section className="min-w-0 lg:col-span-5">
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-semibold">API tokens</h2>
           <button onClick={createToken} className="inline-flex h-9 items-center gap-1.5 rounded-full border border-line px-3 text-xs text-mist hover:border-fog">
@@ -139,7 +139,7 @@ export function Dashboard({ appUrl, initialTokens }: { appUrl: string; initialTo
         </div>
         <ul className="mt-4 divide-y divide-line border-y border-line">
           {tokens.map((t) => (
-            <li key={t.id} className="flex items-center gap-3 py-3">
+            <li key={t.id} className="flex min-w-0 items-center gap-3 py-3">
               <div className="min-w-0 flex-1">
                 <div className="text-sm font-medium">{t.name}</div>
                 <div className="truncate font-mono text-xs text-fog">{t.token}</div>
@@ -160,8 +160,8 @@ export function Dashboard({ appUrl, initialTokens }: { appUrl: string; initialTo
             { k: "install cli", v: `curl -fsSL ${appUrl}/cli -o /usr/local/bin/cpxo && chmod +x /usr/local/bin/cpxo && cpxo login ${primary}` },
             { k: "iOS push url", v: `${appUrl}/api/clip?t=${primary}` },
           ].map((c) => (
-            <div key={c.k} className="card flex items-center gap-2 px-3 py-2">
-              <span className="w-20 shrink-0 text-[11px] uppercase tracking-wide text-fog">{c.k}</span>
+            <div key={c.k} className="card flex min-w-0 items-center gap-2 px-3 py-2">
+              <span className="w-16 shrink-0 text-[10px] uppercase tracking-wide text-fog sm:w-20 sm:text-[11px]">{c.k}</span>
               <code className="min-w-0 flex-1 truncate text-xs text-mist">{c.v}</code>
               <CopyBtn text={c.v} label="" />
             </div>
@@ -174,7 +174,7 @@ export function Dashboard({ appUrl, initialTokens }: { appUrl: string; initialTo
       </section>
 
       {/* Clips + files */}
-      <section className="lg:col-span-7">
+      <section className="min-w-0 lg:col-span-7">
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-semibold">Clipboard</h2>
           <button onClick={load} className="inline-flex h-9 items-center gap-1.5 rounded-full border border-line px-3 text-xs text-mist hover:border-fog">
