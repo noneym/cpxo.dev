@@ -1,6 +1,6 @@
 {
   "name": "cpxo-desktop",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "cpxo desktop: clipboard sync and file upload for Windows and macOS",
   "main": "src/main/index.js",
   "private": true,
@@ -81,10 +81,12 @@
             "LSHandlerRank": "Alternate"
           }
         ]
-      }
+      },
+      "identity": null
     },
     "dmg": {
       "artifactName": "cpxo-${version}-mac-${arch}.dmg"
-    }
+    },
+    "afterPack": "scripts/afterPack.js"
   }
 }

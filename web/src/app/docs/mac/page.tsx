@@ -21,6 +21,8 @@ export default function MacDoc() {
           The build is not notarized, so the first launch is blocked by Gatekeeper. Either right-click the app and choose <strong>Open</strong>, or run:
         </p>
         <CodeBlock code={`xattr -d com.apple.quarantine /Applications/cpxo.app`} />
+        <p>If macOS says the app is damaged (builds before 0.2.1), fix it with:</p>
+        <CodeBlock code={`xattr -cr /Applications/cpxo.app && codesign --force --deep --sign - /Applications/cpxo.app`} />
       </Step>
 
       <Step n={2} title="Sign in">
