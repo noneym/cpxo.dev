@@ -54,7 +54,11 @@ export function AuthForm({ mode, siteKey = "" }: { mode: "login" | "register"; s
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          {mode === "register" && <p className="mt-1.5 text-xs text-fog">At least 8 characters.</p>}
+          {mode === "register" ? (
+            <p className="mt-1.5 text-xs text-fog">At least 8 characters.</p>
+          ) : (
+            <p className="mt-1.5 text-xs text-fog"><Link href="/forgot" className="hover:text-paper">Forgot password?</Link></p>
+          )}
         </div>
         {needsCaptcha && <Turnstile siteKey={SITE_KEY} onToken={setCaptcha} />}
         {error && <p className="text-sm text-coral" role="alert">{error}</p>}

@@ -11,8 +11,10 @@ model User {
   id           Int        @id @default(autoincrement())
   email        String     @unique @db.VarChar(191)
   passwordHash String     @db.VarChar(255)
+  emailVerifiedAt DateTime?
   createdAt    DateTime   @default(now())
   sessions     Session[]
+  emailTokens  EmailToken[]
   tokens       ApiToken[]
   clips        Clip[]
   files        File[]
@@ -67,4 +69,17 @@ model File {
 
   @@index([userId])
   @@index([expiresAt])
+}
+
+model EmailToken {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  kind      String   @db.VarChar(16) // verify | reset
+  token     String   @unique @db.VarChar(64)
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, kind])
 }

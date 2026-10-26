@@ -61,6 +61,7 @@
 
 - **Accounts** with per-device API tokens; tokens work as `Authorization: Bearer`, `?t=` or in the upload path.
 - **Cloudflare Turnstile** on the register form (server-side verified, optional).
+- **Email verification and password reset** through Cloudflare Email Service (optional; unverified accounts cannot use API tokens until they confirm).
 - **Dockerfile** for the web app with `prisma db push` on start; GitHub Actions build the Windows installer and both Mac dmgs on every `v*` tag; Dependabot keeps npm, Docker and Actions current; CI fails on high-severity audit findings.
 - Configurable limits: file size, clip size, history length, retention.
 

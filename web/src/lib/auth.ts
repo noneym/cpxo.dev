@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs";
 import { customAlphabet } from "nanoid";
 import { prisma } from "./db";
 import { config } from "./config";
+import { mailEnabled } from "./mail";
 
 const SESSION_COOKIE = "cpxo_session";
 const alphabet = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -12,6 +13,25 @@ export const shortCode = customAlphabet("23456789abcdefghjkmnpqrstuvwxyz", 8);
 
 export function newApiToken() {
   return `cpx_${tokenBody()}`;
+}
+
+/** Email verification is required only when mail can actually be sent. */
+export function needsVerification(user: { emailVerifiedAt: Date | null }) {
+  return mailEnabled && !user.emailVerifiedAt;
+}
+
+export async function issueEmailToken(userId: number, kind: "verify" | "reset", ttlMs: number) {
+  await prisma.emailToken.deleteMany({ where: { userId, kind } });
+  const token = tokenBody();
+  await prisma.emailToken.create({ data: { userId, kind, token, expiresAt: new Date(Date.now() + ttlMs) } });
+  return token;
+}
+
+export async function consumeEmailToken(token: string, kind: "verify" | "reset") {
+  const row = await prisma.emailToken.findUnique({ where: { token }, include: { user: true } });
+  if (!row || row.kind !== kind || row.usedAt || row.expiresAt < new Date()) return null;
+  await prisma.emailToken.update({ where: { id: row.id }, data: { usedAt: new Date() } });
+  return row.user;
 }
 
 export async function hashPassword(pw: string) {
@@ -63,6 +83,7 @@ export async function userFromToken(req: Request, pathToken?: string) {
   if (!raw || !raw.startsWith("cpx_")) return null;
   const token = await prisma.apiToken.findUnique({ where: { token: raw }, include: { user: true } });
   if (!token) return null;
+  if (needsVerification(token.user)) return null;
   prisma.apiToken
     .update({ where: { id: token.id }, data: { lastUsedAt: new Date() } })
     .catch(() => {});
@@ -75,5 +96,8 @@ export async function apiUser(req: Request, pathToken?: string) {
 }
 
 export function unauthorized() {
-  return Response.json({ error: "unauthorized: pass a token as Authorization: Bearer cpx_... or ?t=" }, { status: 401 });
+  return Response.json(
+    { error: "unauthorized: pass a token as Authorization: Bearer cpx_... or ?t= (and confirm your email first)" },
+    { status: 401 }
+  );
 }

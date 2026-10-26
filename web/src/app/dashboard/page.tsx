@@ -5,6 +5,8 @@ import { currentUser } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { config } from "@/lib/config";
 import { Dashboard } from "@/components/Dashboard";
+import { VerifyBanner } from "@/components/PasswordForms";
+import { needsVerification } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
@@ -28,6 +30,7 @@ export default async function DashboardPage() {
             <Link href="/docs/cli" className="btn btn-ghost h-10">Shell</Link>
           </div>
         </div>
+        {needsVerification(user) && <VerifyBanner email={user.email} />}
         <Dashboard
           appUrl={config.appUrl}
           initialTokens={tokens.map((t) => ({ id: t.id, name: t.name, token: t.token, lastUsedAt: t.lastUsedAt?.toISOString() ?? null }))}
