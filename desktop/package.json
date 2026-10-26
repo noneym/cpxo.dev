@@ -12,10 +12,10 @@
     "dist": "electron-builder --win nsis"
   },
   "devDependencies": {
-    "electron": "^38.0.0",
-    "electron-builder": "^26.0.12",
+    "electron": "^45.0.0",
+    "electron-builder": "^26.18.0",
     "png-to-ico": "^2.1.8",
-    "sharp": "^0.33.5"
+    "sharp": "^0.35.5"
   },
   "build": {
     "appId": "dev.cpxo.desktop",

@@ -64,9 +64,12 @@ export function Dashboard({ appUrl, initialTokens }: { appUrl: string; initialTo
     setFiles(f);
   }, []);
   useEffect(() => {
-    load();
+    const first = setTimeout(load, 0);
     const t = setInterval(load, 10_000);
-    return () => clearInterval(t);
+    return () => {
+      clearTimeout(first);
+      clearInterval(t);
+    };
   }, [load]);
 
   async function pushClip(e: React.FormEvent) {

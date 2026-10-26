@@ -1,0 +1,34 @@
+name: web
+
+on:
+  push:
+    branches: [main]
+    paths: ["web/**", "cli/**", "Dockerfile", ".github/workflows/web.yml"]
+  pull_request:
+    paths: ["web/**", "cli/**", "Dockerfile"]
+  schedule:
+    - cron: "17 6 * * 1" # weekly audit even without commits
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - run: npm ci
+      - name: Audit production dependencies
+        run: npm audit --omit=dev --audit-level=high
+      - run: npx prisma generate
+      - run: npx tsc --noEmit
+      - run: npm run lint
+      - run: npm run build
+        env:
+          DATABASE_URL: mysql://ci:ci@localhost:3306/ci
+          SESSION_SECRET: ci-only-not-a-secret-0000000000000000

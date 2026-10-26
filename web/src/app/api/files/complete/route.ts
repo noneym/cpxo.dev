@@ -1,6 +1,6 @@
 import { apiUser, unauthorized } from "@/lib/auth";
 import { prisma } from "@/lib/db";
-import { config } from "@/lib/config";
+import { config, maxFileLabel } from "@/lib/config";
 import { objectSize, deleteObject } from "@/lib/storage";
 import { fileJson, uploadResponse } from "@/lib/upload";
 
@@ -21,7 +21,7 @@ export async function POST(req: Request) {
   if (size > config.maxFileBytes) {
     await deleteObject(file.objectKey);
     await prisma.file.delete({ where: { id: file.id } });
-    return Response.json({ error: "file too large (max 4 GB)" }, { status: 413 });
+    return Response.json({ error: `file too large (max ${maxFileLabel})` }, { status: 413 });
   }
   const updated = await prisma.file.update({ where: { id: file.id }, data: { status: "ready", size: BigInt(size) } });
   return uploadResponse(req, fileJson(updated), 200);

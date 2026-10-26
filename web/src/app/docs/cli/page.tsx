@@ -2,7 +2,7 @@ import { Doc, Step } from "@/components/Doc";
 import { CodeBlock } from "@/components/CodeBlock";
 import { currentUser } from "@/lib/auth";
 import { prisma } from "@/lib/db";
-import { config } from "@/lib/config";
+import { config, maxFileLabel } from "@/lib/config";
 
 export const dynamic = "force-dynamic";
 
@@ -16,7 +16,7 @@ export default async function CliDoc() {
     <Doc
       active="/docs/cli"
       title="Upload from any shell."
-      lead="curl is enough. Files up to 4 GB, links valid for 7 days, then deleted from storage. A small cpxo script adds clipboard commands."
+      lead={`curl is enough. Files up to ${maxFileLabel}, links valid for ${config.fileTtlDays} days, then deleted from storage. A small cpxo script adds clipboard commands.`}
     >
       <Step n={1} title="Upload with curl">
         <p>The token sits in the path so the command stays short. The response is the share link.</p>
@@ -54,7 +54,7 @@ cpxo rm 42                # delete now`}
       </Step>
 
       <Step n={4} title="Limits">
-        <p>4 GB per file. 512 KB per clipboard entry. Files are deleted 7 days after upload, both the database row and the object in storage.</p>
+        <p>{maxFileLabel} per file. {Math.round(config.maxClipBytes / 1024)} KB per clipboard entry. Files are deleted {config.fileTtlDays} days after upload, both the database row and the object in storage.</p>
       </Step>
     </Doc>
   );

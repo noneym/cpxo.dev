@@ -4,6 +4,7 @@ import { Mark } from "@/components/Logo";
 import { CodeBlock } from "@/components/CodeBlock";
 import { ClipDemo } from "@/components/ClipDemo";
 import { Reveal } from "@/components/Reveal";
+import { config, maxFileLabel } from "@/lib/config";
 import { ArrowRight, ClockCountdown, DeviceMobile, Terminal, WindowsLogo } from "@phosphor-icons/react/dist/ssr";
 
 export default function Home() {
@@ -21,7 +22,7 @@ export default function Home() {
               <span className="text-lime">Paste anywhere.</span>
             </h1>
             <p className="mt-6 max-w-[48ch] text-lg text-mist">
-              Your iPhone clipboard lands on Windows, and back. Drop a 4 GB file from any shell with one curl line.
+              Your iPhone clipboard lands on Windows, and back. Drop a {maxFileLabel} file from any shell with one curl line.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link href="/register" className="btn btn-primary">
@@ -91,7 +92,7 @@ export default function Home() {
           <Reveal>
             <h2 className="max-w-[22ch] text-3xl font-bold tracking-[-0.03em] md:text-5xl">One line from any shell.</h2>
             <p className="mt-4 max-w-[52ch] text-mist">
-              Up to 4 GB per file. The link works for 7 days, then the file is deleted from storage.
+              Up to {maxFileLabel} per file. The link works for {config.fileTtlDays} days, then the file is deleted from storage.
             </p>
           </Reveal>
           <div className="mt-8 grid gap-4 md:grid-cols-2">

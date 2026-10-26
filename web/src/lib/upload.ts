@@ -1,5 +1,5 @@
 import { prisma } from "./db";
-import { config, fileUrl } from "./config";
+import { config, fileUrl, maxFileLabel } from "./config";
 import { shortCode } from "./auth";
 import { streamToObject, objectSize } from "./storage";
 import type { User } from "@prisma/client";
@@ -43,7 +43,7 @@ export async function storeStream(
   declaredSize?: number
 ) {
   if (declaredSize && declaredSize > config.maxFileBytes) {
-    throw Object.assign(new Error("file too large (max 4 GB)"), { status: 413 });
+    throw Object.assign(new Error(`file too large (max ${maxFileLabel})`), { status: 413 });
   }
   const code = shortCode();
   const key = objectKeyFor(code, name);
@@ -52,7 +52,7 @@ export async function storeStream(
   if (size > config.maxFileBytes) {
     const { deleteObject } = await import("./storage");
     await deleteObject(key);
-    throw Object.assign(new Error("file too large (max 4 GB)"), { status: 413 });
+    throw Object.assign(new Error(`file too large (max ${maxFileLabel})`), { status: 413 });
   }
   const file = await prisma.file.create({
     data: {

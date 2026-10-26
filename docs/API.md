@@ -47,7 +47,7 @@ Upload the request body as a file. Use with `curl -T`.
 
 - Filename: `X-File-Name` header, or `?name=`, or the last path segment when using `/up/<token>/<name>`. Falls back to `upload.bin`.
 - `Content-Type` is stored as the file's mime type.
-- Max 4 GB (4294967296 bytes).
+- Max size is `MAX_FILE_MB` (default 4096 MB = 4 GB); over the limit returns `413`.
 - Response `201`:
 
 ```json

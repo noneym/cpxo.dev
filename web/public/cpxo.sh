@@ -14,7 +14,7 @@ usage() {
 cpxo - copy here, paste anywhere.
 
   cpxo login [TOKEN]      save your API token (from $CPXO_URL/dashboard)
-  cpxo up FILE [FILE...]  upload, print the share link (max 4 GB, kept 7 days)
+  cpxo up FILE [FILE...]  upload, print the share link (server limit applies, kept 7 days)
   cpxo get CODE_OR_URL    download a shared file into the current directory
   cpxo copy [TEXT]        push text (or stdin) to your clipboard
   cpxo paste              print the latest clipboard entry
@@ -69,7 +69,6 @@ upload_one() {
   [ -f "$f" ] || { echo "cpxo: no such file: $f" >&2; return 1; }
   name=$(basename "$f")
   size=$(file_size "$f")
-  if [ "$size" -gt 4294967296 ]; then echo "cpxo: $name is larger than 4 GB" >&2; return 1; fi
   if [ "$size" -le "$DIRECT_LIMIT" ]; then
     curl -fsS --progress-bar -T "$f" -H "$(auth)" -H "X-File-Name: $name" -H "Accept: text/plain" "$CPXO_URL/up"
   else
