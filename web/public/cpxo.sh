@@ -112,7 +112,7 @@ cmd_paste() {
 }
 
 cmd_ls() {
-  curl -fsS -H "$(auth)" "$CPXO_URL/api/files" \
+  { curl -fsS -H "$(auth)" "$CPXO_URL/api/files"; echo; } \
     | tr '{' '\n' | sed -n 's/.*"id":\([0-9]*\).*"name":"\([^"]*\)".*"size":\([0-9]*\).*"url":"\([^"]*\)".*/\1\t\3\t\2\t\4/p'
 }
 
