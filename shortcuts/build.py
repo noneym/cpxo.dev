@@ -5,7 +5,7 @@ Run: python shortcuts/build.py  -> shortcuts/*.shortcut (binary plist)
 They are signed on a macOS GitHub Actions runner (`shortcuts sign --mode anyone`)
 and attached to the release; see .github/workflows/shortcuts.yml.
 
-Both shortcuts keep the API token in iCloud Drive at Shortcuts/cpxo/token.txt:
+Both shortcuts keep the API token in the Shortcuts app folder (iCloud Drive/Shortcuts/cpxo/token.txt):
 first run asks for it, later runs read the file.
 """
 import plistlib
@@ -14,6 +14,9 @@ from pathlib import Path
 
 BASE = "https://cpxo.dev"
 TOKEN_PATH = "cpxo/token.txt"
+# "Shortcuts" = the app's own folder: path-based Get/Save File without a picker.
+# "iCloud Drive" would open the Files picker and ignore WFAskWhenRun.
+FILE_SERVICE = "Shortcuts"
 OUT = Path(__file__).parent
 
 
@@ -59,7 +62,7 @@ def token_block():
         action(
             "is.workflow.actions.documentpicker.open",
             UUID=get_uid,
-            WFFileStorageService="iCloud Drive",
+            WFFileStorageService=FILE_SERVICE,
             WFGetFilePath=TOKEN_PATH,
             WFShowFilePicker=False,
             WFFileErrorIfNotFound=False,
@@ -84,7 +87,7 @@ def token_block():
         action(
             "is.workflow.actions.documentpicker.save",
             WFInput=attachment(output(ask_uid, "Provided Input")),
-            WFFileStorageService="iCloud Drive",
+            WFFileStorageService=FILE_SERVICE,
             WFFileDestinationPath=TOKEN_PATH,
             WFAskWhenRun=False,
             WFSaveFileOverwrite=True,

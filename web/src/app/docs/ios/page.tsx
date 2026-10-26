@@ -28,7 +28,7 @@ export default async function IosDoc() {
             <a href="/s/get" className="btn btn-ghost">Add: Get from Windows</a>
           </div>
           <p>
-            On the first run each Shortcut asks for your token and saves it to iCloud Drive (<code>Shortcuts/cpxo/token.txt</code>). Your token:
+            On the first run each Shortcut asks for your token and saves it in the Shortcuts folder (<code>iCloud Drive/Shortcuts/cpxo/token.txt</code>). Your token:
           </p>
           <CodeBlock code={T} />
           {!token && <p className="text-sm">Sign in and this page fills in your real token.</p>}

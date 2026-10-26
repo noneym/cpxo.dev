@@ -5,7 +5,7 @@
 - `cpxo-send-to-windows.shortcut`: Get Clipboard, POST to `/api/clip`, notification
 - `cpxo-get-from-windows.shortcut`: GET `/api/clip`, Copy to Clipboard, notification
 
-Both read the token from iCloud Drive `Shortcuts/cpxo/token.txt` and ask for it on the first run.
+Both read the token from the Shortcuts app folder (`cpxo/token.txt`, file service "Shortcuts", not "iCloud Drive": that one opens the Files picker) and ask for it on the first run.
 
 ## Signing (needs a Mac signed into iCloud)
 
