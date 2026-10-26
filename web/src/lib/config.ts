@@ -7,6 +7,8 @@ export const config = {
   maxFileBytes: Math.max(1, Number(process.env.MAX_FILE_MB ?? 4096)) * MB,
   /** Clipboard entry limit, in kilobytes. */
   maxClipBytes: Math.max(1, Number(process.env.MAX_CLIP_KB ?? 512)) * 1024,
+  /** Clipboard history kept per account (oldest entries are trimmed). */
+  maxClips: Math.max(10, Number(process.env.MAX_CLIPS ?? 10000)),
   sessionDays: 30,
   minio: {
     endpoint: process.env.MINIO_ENDPOINT ?? "localhost:9000",

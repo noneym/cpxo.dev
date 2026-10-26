@@ -24,8 +24,10 @@ export default async function IosDoc() {
         <Step n={1} title="Add the two Shortcuts">
           <p>Open these on your iPhone and tap <strong>Add Shortcut</strong>. They are signed, so iOS installs them directly.</p>
           <div className="flex flex-wrap gap-3">
-            <a href="/s/send" className="btn btn-primary">Add: Send to Windows</a>
-            <a href="/s/get" className="btn btn-ghost">Add: Get from Windows</a>
+            {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+            <a href="/s/send" className="btn btn-primary" download>Add: Send to Windows</a>
+            {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+            <a href="/s/get" className="btn btn-ghost" download>Add: Get from Windows</a>
           </div>
           <p>
             On the first run each Shortcut asks for your token and saves it in the Shortcuts folder (<code>iCloud Drive/Shortcuts/cpxo/token.txt</code>). Your token:

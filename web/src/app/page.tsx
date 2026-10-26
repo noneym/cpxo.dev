@@ -5,7 +5,7 @@ import { CodeBlock } from "@/components/CodeBlock";
 import { ClipDemo } from "@/components/ClipDemo";
 import { Reveal } from "@/components/Reveal";
 import { config, maxFileLabel } from "@/lib/config";
-import { ArrowRight, ClockCountdown, DeviceMobile, Terminal, WindowsLogo } from "@phosphor-icons/react/dist/ssr";
+import { ArrowRight, ClockCountdown, DeviceMobile, Terminal, WindowsLogo, AppleLogo, MagnifyingGlass, DownloadSimple } from "@phosphor-icons/react/dist/ssr";
 
 export default function Home() {
   return (
@@ -22,7 +22,7 @@ export default function Home() {
               <span className="text-lime">Paste anywhere.</span>
             </h1>
             <p className="mt-6 max-w-[48ch] text-lg text-mist">
-              Your iPhone clipboard lands on Windows, and back. Drop a {maxFileLabel} file from any shell with one curl line.
+              Your iPhone, Mac and Windows share one clipboard. Drop a {maxFileLabel} file from any shell with one curl line.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link href="/register" className="btn btn-primary">
@@ -48,16 +48,16 @@ export default function Home() {
               {
                 n: "1",
                 icon: DeviceMobile,
-                title: "iPhone runs a Shortcut",
-                body: "Two Shortcuts in the Shortcuts app: one sends what you copied, one pulls what Windows copied. No app store install.",
+                title: "iPhone adds two Shortcuts",
+                body: "One tap installs them, signed and ready. One sends what you copied, the other pulls what your Mac or PC copied. No App Store.",
                 href: "/docs/ios",
               },
               {
                 n: "2",
                 icon: WindowsLogo,
-                title: "Windows or Mac runs the tray app",
-                body: "It watches your clipboard and pushes changes. New clips from your phone arrive as a notification and are already pasted.",
-                href: "/docs/windows",
+                title: "Mac and Windows run the menu bar app",
+                body: "Copy on one, paste on the other within two seconds. Clips from your phone arrive as a notification, already on the clipboard.",
+                href: "/docs/mac",
               },
               {
                 n: "3",
@@ -119,10 +119,23 @@ curl -JLO https://cpxo.dev/f/k3v9xq2a`}
             <Reveal className="md:col-span-4 md:row-span-2">
               <div className="relative h-full overflow-hidden rounded-[14px] bg-lime p-8 text-ink md:p-10">
                 <Mark size={420} className="pointer-events-none absolute -bottom-24 -right-20 opacity-[0.12]" mono />
-                <h3 className="text-3xl font-bold tracking-[-0.03em] md:text-4xl">Clipboard history, both ways.</h3>
-                <p className="mt-3 max-w-[40ch] text-ink/80">
-                  The last 200 clips stay on your dashboard. Pull any of them back to either device.
+                <h3 className="text-3xl font-bold tracking-[-0.03em] md:text-4xl">Universal clipboard history.</h3>
+                <p className="mt-3 max-w-[44ch] text-ink/80">
+                  Up to {config.maxClips.toLocaleString("en-US")} clips per account. Filter by iPhone, Mac, Windows or shell, search the text, pull any entry back to any device.
                 </p>
+                <div className="mt-5 flex flex-wrap gap-2 text-xs font-semibold">
+                  {[
+                    { Icon: DeviceMobile, label: "iPhone" },
+                    { Icon: AppleLogo, label: "Mac" },
+                    { Icon: WindowsLogo, label: "Windows" },
+                    { Icon: Terminal, label: "Shell" },
+                    { Icon: MagnifyingGlass, label: "Search" },
+                  ].map(({ Icon, label }) => (
+                    <span key={label} className="inline-flex h-8 items-center gap-1.5 rounded-full bg-ink/10 px-3">
+                      <Icon size={14} /> {label}
+                    </span>
+                  ))}
+                </div>
                 <Link href="/register" className="mt-8 inline-flex h-11 items-center gap-2 rounded-full bg-ink px-5 font-semibold text-paper">
                   Start syncing <ArrowRight size={18} weight="bold" />
                 </Link>
@@ -143,6 +156,34 @@ curl -JLO https://cpxo.dev/f/k3v9xq2a`}
               </div>
             </Reveal>
           </div>
+        </section>
+
+        {/* Get it: one row of real download links, no cards */}
+        <section className="py-10 md:py-16">
+          <Reveal>
+            <h2 className="max-w-[20ch] text-3xl font-bold tracking-[-0.03em] md:text-5xl">Every device, ready today.</h2>
+          </Reveal>
+          <ul className="mt-8 divide-y divide-line border-y border-line">
+            {[
+              { Icon: DeviceMobile, title: "iPhone", body: "Two signed Shortcuts, one tap each.", href: "/docs/ios", cta: "Add Shortcuts" },
+              { Icon: AppleLogo, title: "Mac", body: "Menu bar app for Apple Silicon and Intel.", href: "https://github.com/noneym/cpxo.dev/releases/latest", cta: "Download dmg" },
+              { Icon: WindowsLogo, title: "Windows", body: "Tray app with Explorer right-click upload.", href: "https://github.com/noneym/cpxo.dev/releases/latest", cta: "Download installer" },
+              { Icon: Terminal, title: "Shell", body: "curl is enough. The cpxo script adds clipboard commands.", href: "/docs/cli", cta: "See commands" },
+            ].map((d, i) => (
+              <Reveal key={d.title} delay={i * 0.05}>
+                <li className="flex flex-col gap-3 py-5 sm:flex-row sm:items-center">
+                  <d.Icon size={24} className="shrink-0 text-lime" />
+                  <div className="min-w-0 flex-1">
+                    <h3 className="font-semibold">{d.title}</h3>
+                    <p className="text-sm text-mist">{d.body}</p>
+                  </div>
+                  <a href={d.href} className="btn btn-ghost h-10 self-start sm:self-auto">
+                    <DownloadSimple size={16} /> {d.cta}
+                  </a>
+                </li>
+              </Reveal>
+            ))}
+          </ul>
         </section>
 
         {/* Closing CTA */}

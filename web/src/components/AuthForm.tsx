@@ -3,6 +3,9 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { Turnstile } from "./Turnstile";
+
+const SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
 
 export function AuthForm({ mode }: { mode: "login" | "register" }) {
   const router = useRouter();
@@ -10,6 +13,8 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [captcha, setCaptcha] = useState<string | null>(null);
+  const needsCaptcha = mode === "register" && Boolean(SITE_KEY);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -18,7 +23,7 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
     const res = await fetch("/api/auth", {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ mode, email, password }),
+      body: JSON.stringify({ mode, email, password, captcha }),
     });
     const data = await res.json().catch(() => ({}));
     setBusy(false);
@@ -52,8 +57,9 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
           />
           {mode === "register" && <p className="mt-1.5 text-xs text-fog">At least 8 characters.</p>}
         </div>
+        {needsCaptcha && <Turnstile siteKey={SITE_KEY} onToken={setCaptcha} />}
         {error && <p className="text-sm text-coral" role="alert">{error}</p>}
-        <button className="btn btn-primary w-full" disabled={busy}>
+        <button className="btn btn-primary w-full" disabled={busy || (needsCaptcha && !captcha)}>
           {busy ? "One moment" : mode === "login" ? "Sign in" : "Create account"}
         </button>
       </div>

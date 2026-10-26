@@ -30,7 +30,7 @@
 
 | | |
 | --- | --- |
-| **Clipboard sync** | Two iOS Shortcuts push and pull your clipboard. The Windows tray app syncs automatically. History of the last 200 clips on the dashboard. |
+| **Clipboard sync** | Two iOS Shortcuts push and pull your clipboard. The Windows tray app syncs automatically. Searchable history of up to 10,000 clips on the dashboard, filterable by device. |
 | **File drop** | `curl -T file https://cpxo.dev/up/<token>/` returns a share link. Up to 4 GB per file (configurable). Download with `wget` or `curl -JLO`. |
 | **7-day expiry** | Every file is deleted from storage after 7 days. Hourly cleanup in the app plus a bucket lifecycle rule as a backstop. |
 | **Desktop app** | Windows and macOS (Apple Silicon + Intel). Right-click a file in Explorer, or Open With on the Mac: *Upload to cpxo and copy link*. Drag and drop. Notifications when a clip arrives from your phone. |
@@ -88,6 +88,8 @@ Environment variables:
 | `FILE_TTL_DAYS` | `7` | Days before a file is deleted |
 | `MAX_FILE_MB` | `4096` | Upload limit in megabytes |
 | `MAX_CLIP_KB` | `512` | Clipboard entry limit |
+| `MAX_CLIPS` | `10000` | Clipboard history kept per account |
+| `NEXT_PUBLIC_TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET_KEY` | | Cloudflare Turnstile on the register form (both empty = no captcha) |
 
 Reverse proxy and DNS: uploads stream through the app, so anything in front must allow bodies of `MAX_FILE_MB` and long requests. If the domain is on Cloudflare, keep the record **DNS only** (grey cloud): the Cloudflare proxy caps request bodies at 100 MB. The `cpxo` CLI and the Windows app send files above 100 MB straight to MinIO with a presigned URL.
 

@@ -32,11 +32,12 @@ export async function POST(req: Request) {
     return Response.json({ error: "clip too large (max 512 KB)" }, { status: 413 });
 
   const clip = await prisma.clip.create({ data: { userId: user.id, text, source } });
-  // keep the history short
+  // trim history to MAX_CLIPS entries (bounded delete per request)
   const old = await prisma.clip.findMany({
     where: { userId: user.id },
     orderBy: { id: "desc" },
-    skip: 200,
+    skip: config.maxClips,
+    take: 500,
     select: { id: true },
   });
   if (old.length) await prisma.clip.deleteMany({ where: { id: { in: old.map((o) => o.id) } } });

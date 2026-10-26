@@ -2,10 +2,10 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Copy, Check, Trash, UploadSimple, ArrowClockwise, Plus, SignOut, DeviceMobile, WindowsLogo, AppleLogo, Terminal, Globe } from "@phosphor-icons/react";
+import { ClipHistory } from "./ClipHistory";
+import { Copy, Check, Trash, UploadSimple, Plus, SignOut } from "@phosphor-icons/react";
 
 type Token = { id: number; name: string; token: string; lastUsedAt: string | null };
-type Clip = { id: number; text: string; source: string; createdAt: string };
 type FileRow = { id: number; code: string; name: string; size: number; url: string; downloads: number; expiresAt: string };
 
 function fmtBytes(n: number) {
@@ -24,8 +24,6 @@ function ago(iso: string) {
 function daysLeft(iso: string) {
   return Math.max(0, Math.ceil((new Date(iso).getTime() - Date.now()) / 86400_000));
 }
-const SourceIcon = ({ s }: { s: string }) =>
-  s === "ios" ? <DeviceMobile size={16} /> : s === "windows" ? <WindowsLogo size={16} /> : s === "mac" ? <AppleLogo size={16} /> : s === "cli" ? <Terminal size={16} /> : <Globe size={16} />;
 
 function CopyBtn({ text, label = "Copy" }: { text: string; label?: string }) {
   const [ok, setOk] = useState(false);
@@ -47,20 +45,14 @@ function CopyBtn({ text, label = "Copy" }: { text: string; label?: string }) {
 export function Dashboard({ appUrl, initialTokens }: { appUrl: string; initialTokens: Token[] }) {
   const router = useRouter();
   const [tokens, setTokens] = useState<Token[]>(initialTokens);
-  const [clips, setClips] = useState<Clip[] | null>(null);
   const [files, setFiles] = useState<FileRow[] | null>(null);
-  const [clipText, setClipText] = useState("");
   const [uploading, setUploading] = useState<{ name: string; pct: number } | null>(null);
   const [err, setErr] = useState<string | null>(null);
   const fileInput = useRef<HTMLInputElement>(null);
   const primary = tokens[0]?.token ?? "cpx_YOURTOKEN";
 
   const load = useCallback(async () => {
-    const [c, f] = await Promise.all([
-      fetch("/api/clip/history?limit=30").then((r) => (r.ok ? r.json() : [])),
-      fetch("/api/files").then((r) => (r.ok ? r.json() : [])),
-    ]);
-    setClips(c);
+    const f = await fetch("/api/files").then((r) => (r.ok ? r.json() : []));
     setFiles(f);
   }, []);
   useEffect(() => {
@@ -71,16 +63,6 @@ export function Dashboard({ appUrl, initialTokens }: { appUrl: string; initialTo
       clearInterval(t);
     };
   }, [load]);
-
-  async function pushClip(e: React.FormEvent) {
-    e.preventDefault();
-    if (!clipText.trim()) return;
-    const r = await fetch("/api/clip", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ text: clipText, source: "web" }) });
-    if (r.ok) {
-      setClipText("");
-      load();
-    }
-  }
 
   async function createToken() {
     const name = prompt("Token name (e.g. iPhone, laptop)", "device") ?? "";
@@ -116,10 +98,6 @@ export function Dashboard({ appUrl, initialTokens }: { appUrl: string; initialTo
   async function removeFile(id: number) {
     await fetch(`/api/files/${id}`, { method: "DELETE" });
     setFiles((f) => f?.filter((x) => x.id !== id) ?? null);
-  }
-  async function removeClip(id: number) {
-    await fetch(`/api/clip/${id}`, { method: "DELETE" });
-    setClips((c) => c?.filter((x) => x.id !== id) ?? null);
   }
   async function logout() {
     await fetch("/api/auth", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ mode: "logout" }) });
@@ -175,33 +153,7 @@ export function Dashboard({ appUrl, initialTokens }: { appUrl: string; initialTo
 
       {/* Clips + files */}
       <section className="min-w-0 lg:col-span-7">
-        <div className="flex items-center justify-between">
-          <h2 className="text-xl font-semibold">Clipboard</h2>
-          <button onClick={load} className="inline-flex h-9 items-center gap-1.5 rounded-full border border-line px-3 text-xs text-mist hover:border-fog">
-            <ArrowClockwise size={14} /> Refresh
-          </button>
-        </div>
-        <form onSubmit={pushClip} className="mt-4 flex gap-2">
-          <input className="input" placeholder="Type or paste, then send to your devices" value={clipText} onChange={(e) => setClipText(e.target.value)} />
-          <button className="btn btn-primary shrink-0">Send</button>
-        </form>
-        <ul className="mt-4 divide-y divide-line border-y border-line">
-          {clips === null && [0, 1, 2].map((i) => <li key={i} className="h-14 animate-pulse bg-panel/60" />)}
-          {clips?.length === 0 && <li className="py-8 text-center text-sm text-fog">Nothing yet. Copy something on your phone or Windows and it shows up here.</li>}
-          {clips?.map((c) => (
-            <li key={c.id} className="flex items-start gap-3 py-3">
-              <span className="mt-1 text-fog"><SourceIcon s={c.source} /></span>
-              <div className="min-w-0 flex-1">
-                <p className="line-clamp-2 break-all font-mono text-[13px] text-paper">{c.text}</p>
-                <p className="mt-1 text-[11px] text-fog">{c.source} · {ago(c.createdAt)}</p>
-              </div>
-              <CopyBtn text={c.text} label="" />
-              <button onClick={() => removeClip(c.id)} aria-label="Delete" className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-line text-fog hover:border-coral hover:text-coral">
-                <Trash size={14} />
-              </button>
-            </li>
-          ))}
-        </ul>
+        <ClipHistory />
 
         <div className="mt-12 flex items-center justify-between">
           <h2 className="text-xl font-semibold">Files</h2>

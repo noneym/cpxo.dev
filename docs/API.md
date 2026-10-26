@@ -32,8 +32,15 @@ Latest clipboard entry.
 - Default response: `200` with `text/plain; charset=utf-8` body = the text. Headers `X-Clip-Id`, `X-Clip-Source`, `X-Clip-At`.
 - `204` when the user has no clips yet.
 
-### `GET /api/clip/history?limit=20`
-Latest N entries, JSON array of `{ id, text, source, createdAt }` (text truncated to 2000 chars).
+### `GET /api/clip/history`
+Clipboard history, newest first. Up to `MAX_CLIPS` entries (default 10000) are kept per account.
+
+Query: `limit` (1..100, default 30), `source` (`ios,windows,mac,cli,web`, comma-separated), `q` (text search), `before` (cursor: id), `after` (only newer than id).
+
+Response: `{ "items": [{ id, text, source, createdAt }], "nextCursor": 123 | null, "total": 4211 }` (text truncated to 2000 chars).
+
+### `DELETE /api/clip/history`
+Deletes the history; accepts the same `source` and `q` filters. `{ ok: true, deleted: n }`.
 
 ### `DELETE /api/clip/:id`
 Delete one entry. `200 { ok: true }`.

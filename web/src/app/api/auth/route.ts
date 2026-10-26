@@ -1,12 +1,13 @@
 import { createSession, destroySession, hashPassword, newApiToken, verifyPassword } from "@/lib/auth";
 import { prisma } from "@/lib/db";
+import { verifyTurnstile } from "@/lib/turnstile";
 
 export const runtime = "nodejs";
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export async function POST(req: Request) {
-  const body = (await req.json().catch(() => ({}))) as { mode?: string; email?: string; password?: string };
+  const body = (await req.json().catch(() => ({}))) as { mode?: string; email?: string; password?: string; captcha?: string };
   const email = (body.email ?? "").trim().toLowerCase();
   const password = body.password ?? "";
   if (body.mode === "logout") {
@@ -17,6 +18,10 @@ export async function POST(req: Request) {
   if (password.length < 8) return Response.json({ error: "Password must be at least 8 characters." }, { status: 400 });
 
   if (body.mode === "register") {
+    const ip = req.headers.get("cf-connecting-ip") ?? req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? null;
+    if (!(await verifyTurnstile(body.captcha, ip))) {
+      return Response.json({ error: "Captcha check failed. Please try again." }, { status: 400 });
+    }
     const exists = await prisma.user.findUnique({ where: { email } });
     if (exists) return Response.json({ error: "That email already has an account. Sign in instead." }, { status: 409 });
     const user = await prisma.user.create({
