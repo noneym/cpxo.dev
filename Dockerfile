@@ -27,7 +27,8 @@ FROM node:22-alpine AS run
 RUN apk upgrade --no-cache
 WORKDIR /app
 ENV NODE_ENV=production NEXT_TELEMETRY_DISABLED=1 PORT=3000 HOSTNAME=0.0.0.0
-COPY --from=build /app/web/.next/standalone ./
+# standalone output is rooted at web/ (outputFileTracingRoot), so server.js lands in /app/web
+COPY --from=build /app/web/.next/standalone ./web
 COPY --from=build /app/web/.next/static ./web/.next/static
 COPY --from=build /app/web/public ./web/public
 COPY --from=build /app/web/prisma ./web/prisma

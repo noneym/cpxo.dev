@@ -10,7 +10,7 @@ one-click file sharing. Electron, plain JavaScript, no native modules.
   devices are polled from `GET /api/clip?since=<id>&format=json` every 2 s, written to the Windows
   clipboard and announced with a notification.
 - File upload: tray item, drag and drop onto the settings window, or Explorer right-click.
-  Files below 100 MB go through `PUT /up` as a raw stream; larger files (up to 4 GB) use
+  Files below 100 MB go through `PUT /up` as a raw stream; larger files (up to the server limit, 4 GB by default) use
   `POST /api/files/presign`, a streaming PUT to storage and `POST /api/files/complete`.
   The share link is copied to the clipboard when the upload finishes.
 - Settings window: server URL, API token (with a Test button that calls `GET /api/me`),
