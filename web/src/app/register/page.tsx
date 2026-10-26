@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { Nav } from "@/components/Nav";
 import { AuthForm } from "@/components/AuthForm";
 import { currentUser } from "@/lib/auth";
+import { turnstileSiteKey, turnstileEnabled } from "@/lib/turnstile";
 
 export default async function RegisterPage() {
   if (await currentUser()) redirect("/dashboard");
@@ -9,7 +10,7 @@ export default async function RegisterPage() {
     <>
       <Nav />
       <main className="mx-auto flex min-h-[calc(100dvh-64px)] max-w-[1200px] items-center justify-center px-4 py-12">
-        <AuthForm mode="register" />
+        <AuthForm mode="register" siteKey={turnstileEnabled ? turnstileSiteKey : ""} />
       </main>
     </>
   );

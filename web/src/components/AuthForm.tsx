@@ -5,9 +5,8 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Turnstile } from "./Turnstile";
 
-const SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
-
-export function AuthForm({ mode }: { mode: "login" | "register" }) {
+export function AuthForm({ mode, siteKey = "" }: { mode: "login" | "register"; siteKey?: string }) {
+  const SITE_KEY = siteKey;
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

@@ -131,7 +131,7 @@ Environment variables:
 | `MAX_FILE_MB` | `4096` | Upload limit in megabytes |
 | `MAX_CLIP_KB` | `512` | Clipboard entry limit |
 | `MAX_CLIPS` | `10000` | Clipboard history kept per account |
-| `NEXT_PUBLIC_TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET_KEY` | | Cloudflare Turnstile on the register form (both empty = no captcha) |
+| `TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET_KEY` | | Cloudflare Turnstile on the register form (both empty = no captcha) |
 
 Reverse proxy and DNS: uploads stream through the app, so anything in front must allow bodies of `MAX_FILE_MB` and long requests. If the domain is on Cloudflare, keep the record **DNS only** (grey cloud): the Cloudflare proxy caps request bodies at 100 MB. The `cpxo` CLI and the desktop apps send files above 100 MB straight to MinIO with a presigned URL.
 
