@@ -4,6 +4,7 @@ import { Nav, Footer } from "./Nav";
 const tabs = [
   { href: "/docs/ios", label: "iPhone" },
   { href: "/docs/windows", label: "Windows" },
+  { href: "/docs/mac", label: "Mac" },
   { href: "/docs/cli", label: "Shell" },
 ];
 

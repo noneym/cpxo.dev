@@ -14,13 +14,14 @@
   <a href="https://cpxo.dev/docs/ios">iPhone setup</a> ·
   <a href="https://cpxo.dev/docs/cli">Shell</a> ·
   <a href="https://cpxo.dev/docs/windows">Windows app</a> ·
-  <a href="https://github.com/noneym/cpxo.dev/releases/latest">Download for Windows</a>
+  <a href="https://cpxo.dev/docs/mac">Mac app</a> ·
+  <a href="https://github.com/noneym/cpxo.dev/releases/latest">Download</a>
 </p>
 
 <p align="center">
   <a href="https://github.com/noneym/cpxo.dev/actions/workflows/web.yml"><img src="https://github.com/noneym/cpxo.dev/actions/workflows/web.yml/badge.svg" alt="web"></a>
   <a href="https://github.com/noneym/cpxo.dev/actions/workflows/desktop.yml"><img src="https://github.com/noneym/cpxo.dev/actions/workflows/desktop.yml/badge.svg" alt="desktop"></a>
-  <a href="https://github.com/noneym/cpxo.dev/releases/latest"><img src="https://img.shields.io/github/v/release/noneym/cpxo.dev?label=windows%20app" alt="release"></a>
+  <a href="https://github.com/noneym/cpxo.dev/releases/latest"><img src="https://img.shields.io/github/v/release/noneym/cpxo.dev?label=desktop%20app" alt="release"></a>
 </p>
 
 ---
@@ -32,7 +33,7 @@
 | **Clipboard sync** | Two iOS Shortcuts push and pull your clipboard. The Windows tray app syncs automatically. History of the last 200 clips on the dashboard. |
 | **File drop** | `curl -T file https://cpxo.dev/up/<token>/` returns a share link. Up to 4 GB per file (configurable). Download with `wget` or `curl -JLO`. |
 | **7-day expiry** | Every file is deleted from storage after 7 days. Hourly cleanup in the app plus a bucket lifecycle rule as a backstop. |
-| **Windows app** | Right-click any file in Explorer: *Upload to cpxo and copy link*. Drag and drop. Notifications when a clip arrives from your phone. |
+| **Desktop app** | Windows and macOS (Apple Silicon + Intel). Right-click a file in Explorer, or Open With on the Mac: *Upload to cpxo and copy link*. Drag and drop. Notifications when a clip arrives from your phone. |
 
 ## Quick start
 
@@ -57,7 +58,7 @@ Tokens come from the dashboard at [cpxo.dev/dashboard](https://cpxo.dev/dashboar
 | Path       | What                                                              |
 | ---------- | ----------------------------------------------------------------- |
 | `web/`     | Next.js 16 site + API. Prisma on MariaDB, MinIO through the S3 SDK |
-| `desktop/` | Electron tray app for Windows, packaged with electron-builder (NSIS) |
+| `desktop/` | Electron tray app for Windows (NSIS) and macOS (dmg, arm64 + x64)    |
 | `cli/cpxo` | POSIX shell client, served at `/cli`                              |
 | `design/`  | Logo, mono variant and brand board                                |
 | `docs/`    | [API contract](docs/API.md)                                       |
@@ -90,15 +91,16 @@ Environment variables:
 
 Reverse proxy and DNS: uploads stream through the app, so anything in front must allow bodies of `MAX_FILE_MB` and long requests. If the domain is on Cloudflare, keep the record **DNS only** (grey cloud): the Cloudflare proxy caps request bodies at 100 MB. The `cpxo` CLI and the Windows app send files above 100 MB straight to MinIO with a presigned URL.
 
-## Build the Windows app
+## Build the desktop app
 
 ```bash
 cd desktop
 npm install
-npm run dist   # dist/cpxo-setup-<version>.exe
+npm run dist:win   # dist/cpxo-setup-<version>.exe   (on Windows)
+npm run dist:mac   # dist/cpxo-<version>-mac-{arm64,x64}.dmg  (on a Mac)
 ```
 
-Pushing a tag like `v0.1.0` builds the installer on GitHub Actions and attaches it to a release.
+Pushing a tag like `v0.2.0` builds both on GitHub Actions and attaches them to a release. The Mac build is not notarized: first launch needs right-click, Open.
 
 ## License
 

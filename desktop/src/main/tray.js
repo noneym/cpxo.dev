@@ -5,6 +5,20 @@ const { Tray, Menu, nativeImage } = require('electron');
 
 const ASSETS = path.join(__dirname, '..', '..', 'assets');
 
+/** Tray image: a monochrome Template image in the macOS menu bar, the coloured mark elsewhere. */
+function trayIcon() {
+  if (process.platform === 'darwin') {
+    // createFromPath picks up trayTemplate@2x.png for Retina automatically.
+    const img = nativeImage.createFromPath(path.join(ASSETS, 'trayTemplate.png'));
+    if (!img.isEmpty()) {
+      img.setTemplateImage(true);
+      return img;
+    }
+  }
+  const icon = nativeImage.createFromPath(path.join(ASSETS, 'tray.png'));
+  return icon.isEmpty() ? nativeImage.createEmpty() : icon;
+}
+
 class AppTray {
   /**
    * @param {object} handlers
@@ -18,9 +32,12 @@ class AppTray {
   constructor(handlers) {
     this.handlers = handlers;
     this.state = { signedIn: false, syncClipboard: true, online: true, progress: null };
-    const icon = nativeImage.createFromPath(path.join(ASSETS, 'tray.png'));
-    this.tray = new Tray(icon.isEmpty() ? nativeImage.createEmpty() : icon);
-    this.tray.on('click', () => this.tray.popUpContextMenu());
+    this.tray = new Tray(trayIcon());
+    // macOS shows the context menu on click by itself (and does not emit
+    // 'click' once a context menu is set); Windows needs the explicit pop-up.
+    if (process.platform !== 'darwin') {
+      this.tray.on('click', () => this.tray.popUpContextMenu());
+    }
     this.tray.on('double-click', () => handlers.onSettings());
     this.render();
   }
@@ -78,6 +95,11 @@ class AppTray {
 
     this.tray.setContextMenu(Menu.buildFromTemplate(template));
     this.renderTooltip();
+  }
+
+  /** True while the tray icon exists (the app can be reached without a window). */
+  isActive() {
+    return !!this.tray && !this.tray.isDestroyed();
   }
 
   destroy() {

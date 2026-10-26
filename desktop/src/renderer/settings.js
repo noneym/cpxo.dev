@@ -16,6 +16,7 @@
   const drop = $('drop');
   const uploads = $('uploads');
   let statusTimer = null;
+  let isWindows = true;
 
   function setStatus(el, text, kind) {
     el.textContent = '';
@@ -31,14 +32,15 @@
   }
 
   function collect() {
-    return {
+    const out = {
       serverUrl: fields.serverUrl.value,
       token: fields.token.value,
       syncClipboard: fields.syncClipboard.checked,
       notifications: fields.notifications.checked,
       launchAtLogin: fields.launchAtLogin.checked,
-      contextMenu: fields.contextMenu.checked,
     };
+    if (isWindows) out.contextMenu = fields.contextMenu.checked;
+    return out;
   }
 
   function fill(s) {
@@ -50,6 +52,10 @@
     fields.contextMenu.checked = !!s.contextMenu;
     $('version').textContent = `v${s.version}`;
     $('devHint').hidden = !!s.isPackaged;
+    // The Explorer context menu is Windows only; macOS gets Finder "Open With" instead.
+    isWindows = !s.platform || s.platform === 'win32';
+    $('contextMenuRow').hidden = !isWindows;
+    $('macHint').hidden = s.platform !== 'darwin';
   }
 
   async function load() {

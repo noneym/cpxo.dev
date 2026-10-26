@@ -21,6 +21,9 @@ export async function Nav() {
           <Link href="/docs/windows" className="hidden sm:inline-flex h-10 items-center rounded-full px-3.5 text-mist hover:text-paper">
             Windows
           </Link>
+          <Link href="/docs/mac" className="hidden md:inline-flex h-10 items-center rounded-full px-3.5 text-mist hover:text-paper">
+            Mac
+          </Link>
           {user ? (
             <Link href="/dashboard" className="btn btn-primary h-10 ml-2">
               Dashboard
@@ -53,6 +56,7 @@ export function Footer() {
           <Link href="/docs/ios" className="hover:text-paper">iPhone setup</Link>
           <Link href="/docs/cli" className="hover:text-paper">Shell CLI</Link>
           <Link href="/docs/windows" className="hover:text-paper">Windows app</Link>
+          <Link href="/docs/mac" className="hover:text-paper">Mac app</Link>
           <a href="https://github.com/noneym/cpxo.dev" className="hover:text-paper">GitHub</a>
         </div>
       </div>

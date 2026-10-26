@@ -9,6 +9,9 @@ const { EventEmitter } = require('events');
 const api = require('./api');
 const log = require('./logger');
 
+// What this machine reports as the clip origin.
+const SOURCE = process.platform === 'darwin' ? 'mac' : 'windows';
+
 const LOCAL_POLL_MS = 500;
 const REMOTE_POLL_MS = 2000;
 const MAX_BACKOFF_MS = 60000;
@@ -101,7 +104,7 @@ class ClipboardSync extends EventEmitter {
       this.pendingText = null;
       this.pushing = true;
       try {
-        const res = await api.pushClip(this.store.serverUrl, this.store.token, text, 'windows');
+        const res = await api.pushClip(this.store.serverUrl, this.store.token, text, SOURCE);
         if (res && typeof res.id === 'number') this.rememberId(res.id);
         this.setOnline(true);
         log.info(`clipboard: pushed clip id=${res && res.id} (${text.length} chars)`);
@@ -135,7 +138,7 @@ class ClipboardSync extends EventEmitter {
       if (clip && typeof clip.id === 'number') {
         const isNew = clip.id > (this.store.get('lastClipId') || 0);
         this.rememberId(clip.id);
-        if (this.primed && isNew && clip.source !== 'windows') {
+        if (this.primed && isNew && clip.source !== SOURCE) {
           this.applyRemote(clip);
         }
       }

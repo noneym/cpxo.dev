@@ -19,8 +19,8 @@ Error responses are JSON: `{ "error": "message" }` with 401 / 400 / 413 / 404.
 ### `POST /api/clip`
 Push a clipboard entry.
 
-- Body: raw `text/plain`, or JSON `{ "text": "...", "source": "ios" | "windows" | "cli" }`
-- Optional header `X-Source: ios|windows|cli` when the body is plain text.
+- Body: raw `text/plain`, or JSON `{ "text": "...", "source": "ios" | "windows" | "mac" | "cli" }`
+- Optional header `X-Source: ios|windows|mac|cli` when the body is plain text.
 - Max 512 KB.
 - Response `201`: `{ "id": 123, "createdAt": "ISO", "source": "ios" }`
 

@@ -14,6 +14,8 @@ const { uploadFile, formatBytes } = require('./uploader');
 const registry = require('./registry');
 const api = require('./api');
 
+const IS_WIN = process.platform === 'win32';
+const IS_MAC = process.platform === 'darwin';
 const PROGRESS_WINDOW_MIN_BYTES = 10 * 1024 * 1024;
 const RENDERER = path.join(__dirname, '..', 'renderer');
 const PRELOAD = path.join(__dirname, 'preload.js');
@@ -25,23 +27,37 @@ let sync;
 let settingsWin = null;
 let progressWin = null;
 let quitting = false;
+let ready = false;
 const uploadQueue = [];
 let uploading = false;
+// Files handed to us (macOS 'open-file', argv) before the app is ready.
+const pendingFiles = [];
 
 // --- single instance ---------------------------------------------------------
 
 // Electron (in dev) and Chromium interleave their own switches with ours, so
-// the value for --upload is the next argument that is not a switch.
+// the value for --upload is the next argument that is not a switch. Plain
+// (non-switch) arguments that name an existing file are uploaded too, so
+// `cpxo file.txt` and `open -a cpxo file.txt` work from a terminal.
 function parseUploadArgs(argv) {
   const files = [];
   const appPath = app.getAppPath();
-  for (let i = 0; i < argv.length; i++) {
+  const isPlainFile = (v) => {
+    if (!v || v.startsWith('-') || v === appPath) return false;
+    if (path.resolve(v) === path.resolve(appPath)) return false;
+    try { return fs.statSync(v).isFile(); } catch (_) { return false; }
+  };
+  // argv[0] is the executable (electron / cpxo.exe / cpxo), never a file to upload.
+  for (let i = 1; i < argv.length; i++) {
     const a = argv[i];
     if (a.startsWith('--upload=')) {
       files.push(a.slice('--upload='.length));
       continue;
     }
-    if (a !== '--upload') continue;
+    if (a !== '--upload') {
+      if (isPlainFile(a)) files.push(a);
+      continue;
+    }
     for (let j = i + 1; j < argv.length; j++) {
       const v = argv[j];
       if (v.startsWith('-') || v === appPath) continue;
@@ -53,11 +69,21 @@ function parseUploadArgs(argv) {
   return files.filter((f) => f && f.trim()).map((f) => path.resolve(f));
 }
 
+// macOS: Finder "Open With", a drop on the Dock icon and `open -a cpxo <file>`
+// all arrive here, possibly before 'ready'.
+function onOpenFile(event, filePath) {
+  if (event && typeof event.preventDefault === 'function') event.preventDefault();
+  if (typeof filePath !== 'string' || !filePath) return;
+  if (ready) enqueueUploads([filePath]);
+  else pendingFiles.push(filePath);
+}
+
 const gotLock = app.requestSingleInstanceLock();
 if (!gotLock) {
   // Another instance is running; it receives our argv via 'second-instance'.
   app.quit();
 } else {
+  app.on('open-file', onOpenFile);
   app.on('second-instance', (_event, argv) => {
     const files = parseUploadArgs(argv);
     log.info('second instance argv:', JSON.stringify(argv));
@@ -77,13 +103,20 @@ if (!gotLock) {
 async function main() {
   log.init(app.getPath('userData'));
   log.info(`cpxo ${app.getVersion()} starting (${app.isPackaged ? 'packaged' : 'dev'})`);
-  app.setAppUserModelId('dev.cpxo.desktop');
+  if (IS_WIN) app.setAppUserModelId('dev.cpxo.desktop');
+  // Menu bar app on macOS: no Dock icon until a window is open.
+  if (IS_MAC) setDockVisible(false);
 
   store = new SettingsStore(app.getPath('userData'));
   store.on('error', (err) => log.error('settings save failed', err));
 
-  // Stay alive with all windows closed (tray app).
-  app.on('window-all-closed', () => { /* keep running */ });
+  // Stay alive with all windows closed (tray app). Only quit on Windows/Linux
+  // when there is no tray icon left to reach the app from.
+  app.on('window-all-closed', () => {
+    if (IS_MAC) return;
+    if (tray && tray.isActive()) return;
+    app.quit();
+  });
   app.on('before-quit', () => { quitting = true; });
 
   sync = new ClipboardSync(store);
@@ -106,15 +139,17 @@ async function main() {
 
   store.on('change', onSettingChanged);
   applyLoginItem();
-  if (store.get('contextMenu')) registry.syncIfRegistered();
+  if (IS_WIN && store.get('contextMenu')) registry.syncIfRegistered();
 
   if (store.isSignedIn && store.get('syncClipboard')) sync.start();
 
-  const files = parseUploadArgs(process.argv);
+  ipc();
+  ready = true;
+
+  const files = parseUploadArgs(process.argv).concat(pendingFiles.splice(0));
   if (files.length) enqueueUploads(files);
   else if (!store.isSignedIn) openSettings();
 
-  ipc();
   log.info('ready');
 }
 
@@ -136,6 +171,7 @@ function onSettingChanged(key, value) {
       applyLoginItem();
       break;
     case 'contextMenu':
+      if (!IS_WIN) break; // Explorer only; Finder uses "Open With" (see package.json CFBundleDocumentTypes)
       (value ? registry.register() : registry.unregister()).catch((err) => {
         log.error('registry', err);
         notify('Context menu', `Could not update Explorer menu: ${err.message}`);
@@ -149,11 +185,13 @@ function onSettingChanged(key, value) {
 function applyLoginItem() {
   if (!app.isPackaged) return; // would register electron.exe in dev
   try {
-    app.setLoginItemSettings({
-      openAtLogin: !!store.get('launchAtLogin'),
-      path: process.execPath,
-      args: [],
-    });
+    const settings = { openAtLogin: !!store.get('launchAtLogin') };
+    if (IS_WIN) {
+      settings.path = process.execPath;
+      settings.args = [];
+    }
+    if (IS_MAC) settings.openAsHidden = true;
+    app.setLoginItemSettings(settings);
   } catch (err) {
     log.warn('setLoginItemSettings failed', err.message);
   }
@@ -278,6 +316,22 @@ async function uploadOne(filePath) {
 
 // --- windows -----------------------------------------------------------------
 
+/** macOS only: show the Dock icon while a settings window is open. */
+function setDockVisible(visible) {
+  if (!IS_MAC || !app.dock) return;
+  try {
+    if (visible) {
+      const p = app.dock.show();
+      if (p && typeof p.catch === 'function') p.catch((err) => log.warn('dock.show failed', err.message));
+    } else {
+      app.dock.hide();
+      if (typeof app.setActivationPolicy === 'function') app.setActivationPolicy('accessory');
+    }
+  } catch (err) {
+    log.warn('dock visibility failed', err.message);
+  }
+}
+
 function openSettings() {
   if (settingsWin && !settingsWin.isDestroyed()) {
     settingsWin.show();
@@ -307,8 +361,12 @@ function openSettings() {
   });
   settingsWin.setMenuBarVisibility(false);
   settingsWin.loadFile(path.join(RENDERER, 'settings.html'));
+  setDockVisible(true);
   settingsWin.once('ready-to-show', () => settingsWin.show());
-  settingsWin.on('closed', () => { settingsWin = null; });
+  settingsWin.on('closed', () => {
+    settingsWin = null;
+    if (!quitting) setDockVisible(false);
+  });
   settingsWin.webContents.on('console-message', (details) => {
     const d = details && typeof details === 'object' && 'level' in details ? details : null;
     if (d && (d.level === 'error' || d.level === 'warning')) log.warn('renderer:', d.message);
@@ -378,6 +436,7 @@ function ipc() {
   ipcMain.handle('settings:get', () => ({
     ...store.all(),
     isPackaged: app.isPackaged,
+    platform: process.platform,
     version: app.getVersion(),
     logFile: log.file,
   }));
@@ -393,6 +452,7 @@ function ipc() {
     for (const k of ['launchAtLogin', 'syncClipboard', 'notifications', 'contextMenu']) {
       if (typeof patch[k] === 'boolean') clean[k] = patch[k];
     }
+    if (!IS_WIN) delete clean.contextMenu; // Explorer menu does not exist elsewhere
     store.update(clean);
     return store.all();
   });

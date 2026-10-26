@@ -55,7 +55,7 @@ export default function Home() {
               {
                 n: "2",
                 icon: WindowsLogo,
-                title: "Windows runs the tray app",
+                title: "Windows or Mac runs the tray app",
                 body: "It watches your clipboard and pushes changes. New clips from your phone arrive as a notification and are already pasted.",
                 href: "/docs/windows",
               },
@@ -139,7 +139,7 @@ curl -JLO https://cpxo.dev/f/k3v9xq2a`}
               <div className="card h-full bg-[linear-gradient(135deg,#14171c,#1f2430)] p-6">
                 <WindowsLogo size={28} className="text-lime" />
                 <h3 className="mt-4 text-xl font-semibold">Right-click, upload, link copied</h3>
-                <p className="mt-2 text-sm text-mist">The Windows app adds an Explorer menu item. Drop a file, the link is on your clipboard.</p>
+                <p className="mt-2 text-sm text-mist">Explorer menu item on Windows, Open With on the Mac. Drop a file, the link is on your clipboard.</p>
               </div>
             </Reveal>
           </div>

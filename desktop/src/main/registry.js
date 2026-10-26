@@ -1,5 +1,6 @@
 // Explorer context menu: HKCU\Software\Classes\*\shell\cpxo
-// Registered with reg.exe so no native module is needed.
+// Registered with reg.exe so no native module is needed. Windows only: every
+// exported function is a no-op (resolves false) on other platforms.
 'use strict';
 const { spawn } = require('child_process');
 const { app } = require('electron');
@@ -63,11 +64,13 @@ async function isRegistered() {
 
 /** Re-point the command at the current exe (after an update / dev run). */
 async function syncIfRegistered() {
+  if (process.platform !== 'win32') return false;
   try {
     if (await isRegistered()) await register();
   } catch (err) {
     log.warn('registry: sync failed', err.message);
   }
+  return true;
 }
 
 module.exports = { register, unregister, isRegistered, syncIfRegistered, KEY, LABEL };

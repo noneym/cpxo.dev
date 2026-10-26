@@ -1,7 +1,7 @@
 {
   "name": "cpxo-desktop",
-  "version": "0.1.1",
-  "description": "cpxo desktop: clipboard sync and file upload for Windows",
+  "version": "0.2.0",
+  "description": "cpxo desktop: clipboard sync and file upload for Windows and macOS",
   "main": "src/main/index.js",
   "private": true,
   "author": "cpxo.dev",
@@ -9,7 +9,9 @@
   "scripts": {
     "start": "electron .",
     "icons": "node scripts/icons.js",
-    "dist": "electron-builder --win nsis"
+    "dist": "electron-builder --win nsis",
+    "dist:win": "electron-builder --win nsis",
+    "dist:mac": "electron-builder --mac"
   },
   "devDependencies": {
     "electron": "^45.0.0",
@@ -42,6 +44,47 @@
       "artifactName": "cpxo-setup-${version}.${ext}",
       "shortcutName": "cpxo",
       "deleteAppDataOnUninstall": false
+    },
+    "mac": {
+      "category": "public.app-category.utilities",
+      "icon": "build/icon.png",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "arm64",
+            "x64"
+          ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "arm64",
+            "x64"
+          ]
+        }
+      ],
+      "artifactName": "cpxo-${version}-mac-${arch}.${ext}",
+      "hardenedRuntime": false,
+      "gatekeeperAssess": false,
+      "extendInfo": {
+        "LSUIElement": true,
+        "CFBundleDocumentTypes": [
+          {
+            "CFBundleTypeName": "Any file",
+            "LSItemContentTypes": [
+              "public.data",
+              "public.content",
+              "public.item"
+            ],
+            "CFBundleTypeRole": "Viewer",
+            "LSHandlerRank": "Alternate"
+          }
+        ]
+      }
+    },
+    "dmg": {
+      "artifactName": "cpxo-${version}-mac-${arch}.dmg"
     }
   }
 }

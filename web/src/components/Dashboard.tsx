@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Copy, Check, Trash, UploadSimple, ArrowClockwise, Plus, SignOut, DeviceMobile, WindowsLogo, Terminal, Globe } from "@phosphor-icons/react";
+import { Copy, Check, Trash, UploadSimple, ArrowClockwise, Plus, SignOut, DeviceMobile, WindowsLogo, AppleLogo, Terminal, Globe } from "@phosphor-icons/react";
 
 type Token = { id: number; name: string; token: string; lastUsedAt: string | null };
 type Clip = { id: number; text: string; source: string; createdAt: string };
@@ -25,7 +25,7 @@ function daysLeft(iso: string) {
   return Math.max(0, Math.ceil((new Date(iso).getTime() - Date.now()) / 86400_000));
 }
 const SourceIcon = ({ s }: { s: string }) =>
-  s === "ios" ? <DeviceMobile size={16} /> : s === "windows" ? <WindowsLogo size={16} /> : s === "cli" ? <Terminal size={16} /> : <Globe size={16} />;
+  s === "ios" ? <DeviceMobile size={16} /> : s === "windows" ? <WindowsLogo size={16} /> : s === "mac" ? <AppleLogo size={16} /> : s === "cli" ? <Terminal size={16} /> : <Globe size={16} />;
 
 function CopyBtn({ text, label = "Copy" }: { text: string; label?: string }) {
   const [ok, setOk] = useState(false);
