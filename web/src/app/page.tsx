@@ -5,7 +5,7 @@ import { CodeBlock } from "@/components/CodeBlock";
 import { ClipDemo } from "@/components/ClipDemo";
 import { Reveal } from "@/components/Reveal";
 import { config, maxFileLabel } from "@/lib/config";
-import { ArrowRight, ClockCountdown, DeviceMobile, Terminal, WindowsLogo, AppleLogo, MagnifyingGlass, DownloadSimple, Robot } from "@phosphor-icons/react/dist/ssr";
+import { ArrowRight, ClockCountdown, DeviceMobile, Terminal, WindowsLogo, AppleLogo, MagnifyingGlass, DownloadSimple, Robot, CursorClick, CloudArrowUp, LinkSimple } from "@phosphor-icons/react/dist/ssr";
 
 export default function Home() {
   return (
@@ -113,6 +113,35 @@ curl -JLO https://cpxo.dev/f/k3v9xq2a`}
           </div>
         </section>
 
+        {/* Right-click upload: one full-width flow, three moments */}
+        <section className="py-20 md:py-28">
+          <Reveal>
+            <h2 className="max-w-[22ch] text-3xl font-bold tracking-[-0.03em] md:text-5xl">Right-click a file. The link is already on your clipboard.</h2>
+            <p className="mt-4 max-w-[56ch] text-mist">
+              No browser tab, no drag into a web form. The desktop app uploads straight from Explorer or Finder and copies the share link the moment it finishes, so the next thing you paste is the link.
+            </p>
+          </Reveal>
+          <ol className="mt-10 grid gap-6 md:grid-cols-3">
+            {[
+              { Icon: CursorClick, title: "Right-click the file", body: "Windows: Explorer menu item \"Upload to cpxo and copy link\". Mac: Open With, cpxo, or drop it on the Dock icon. iPhone: Share Sheet." },
+              { Icon: CloudArrowUp, title: "It uploads in the background", body: `Up to ${maxFileLabel}. A notification shows progress for big files; nothing blocks you.` },
+              { Icon: LinkSimple, title: "Paste the link anywhere", body: "cpxo.dev/f/... is on your clipboard, and on your other devices too. Anyone can download it for 7 days, then it is gone." },
+            ].map((st, i) => (
+              <Reveal key={st.title} delay={i * 0.08}>
+                <li className="border-t border-line pt-5">
+                  <st.Icon size={28} className="text-lime" />
+                  <h3 className="mt-4 text-lg font-semibold">{st.title}</h3>
+                  <p className="mt-2 text-sm text-mist">{st.body}</p>
+                </li>
+              </Reveal>
+            ))}
+          </ol>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <Link href="/docs/windows" className="btn btn-ghost">Windows setup</Link>
+            <Link href="/docs/mac" className="btn btn-ghost">Mac setup</Link>
+          </div>
+        </section>
+
         {/* Bento: 4 items, 4 cells, varied backgrounds */}
         <section className="py-20 md:py-28">
           <div className="grid gap-4 md:grid-cols-6 md:grid-rows-2">
@@ -145,14 +174,14 @@ curl -JLO https://cpxo.dev/f/k3v9xq2a`}
               <div className="card h-full p-6">
                 <ClockCountdown size={28} className="text-lime" />
                 <h3 className="mt-4 text-xl font-semibold">Gone in 7 days</h3>
-                <p className="mt-2 text-sm text-mist">Every file expires. Nothing piles up, nothing leaks later. Your AI can see the same clipboard and files over MCP.</p>
+                <p className="mt-2 text-sm text-mist">Every file expires. Nothing piles up, nothing leaks later.</p>
               </div>
             </Reveal>
             <Reveal delay={0.1} className="md:col-span-2">
               <div className="card h-full bg-[linear-gradient(135deg,#14171c,#1f2430)] p-6">
-                <WindowsLogo size={28} className="text-lime" />
-                <h3 className="mt-4 text-xl font-semibold">Right-click, upload, link copied</h3>
-                <p className="mt-2 text-sm text-mist">Explorer menu item on Windows, Open With on the Mac. Drop a file, the link is on your clipboard.</p>
+                <Robot size={28} className="text-lime" />
+                <h3 className="mt-4 text-xl font-semibold">Your AI sees it too</h3>
+                <p className="mt-2 text-sm text-mist">Connect Claude, Cursor or Codex over MCP: they read your clipboard history and upload files for you.</p>
               </div>
             </Reveal>
           </div>
