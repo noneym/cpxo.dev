@@ -6,6 +6,7 @@ const tabs = [
   { href: "/docs/windows", label: "Windows" },
   { href: "/docs/mac", label: "Mac" },
   { href: "/docs/cli", label: "Shell" },
+  { href: "/docs/mcp", label: "MCP" },
 ];
 
 export function Doc({ title, lead, active, children }: { title: string; lead: string; active: string; children: React.ReactNode }) {

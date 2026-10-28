@@ -22,17 +22,35 @@ export default async function IosDoc() {
     >
       {signed ? (
         <Step n={1} title="Add the two Shortcuts">
-          <p>Open these on your iPhone and tap <strong>Add Shortcut</strong>. They are signed, so iOS installs them directly.</p>
-          <p>
-            <strong>Send to Windows</strong> sends whatever is on the clipboard: text becomes a clip, a copied photo or file is uploaded and its link becomes the clip (and is copied back to your iPhone).
-            It also appears in the Share Sheet, so you can share a photo or a file straight from Photos or Files.
-          </p>
-          <div className="flex flex-wrap gap-3">
-            {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
-            <a href="/s/send" className="btn btn-primary" download>Add: Send to Windows</a>
-            {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
-            <a href="/s/get" className="btn btn-ghost" download>Add: Get from Windows</a>
-          </div>
+          <p>You need both Shortcuts. Open each link on your iPhone and tap <strong>Add Shortcut</strong>; they are signed, so iOS installs them directly.</p>
+          <ol className="card divide-y divide-line">
+            {[
+              {
+                n: "1",
+                href: "/s/send",
+                cta: "Add: Send to Windows",
+                title: "Send to Windows",
+                body: "Sends whatever is on the clipboard. Text becomes a clip; a copied photo or file is uploaded and its link becomes the clip, copied back to your iPhone too. Also in the Share Sheet for Photos and Files.",
+              },
+              {
+                n: "2",
+                href: "/s/get",
+                cta: "Add: Get from Windows",
+                title: "Get from Windows",
+                body: "Puts the latest clip from your Mac, Windows or shell on the iPhone clipboard.",
+              },
+            ].map((it) => (
+              <li key={it.n} className="flex flex-col gap-3 px-4 py-4 sm:flex-row sm:items-center">
+                <span className="font-mono text-2xl text-lime sm:w-10">{it.n}</span>
+                <div className="min-w-0 flex-1">
+                  <p className="font-semibold text-paper">{it.title}</p>
+                  <p className="text-sm">{it.body}</p>
+                </div>
+                {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+                <a href={it.href} className="btn btn-primary shrink-0 self-start sm:self-auto" download>{it.cta}</a>
+              </li>
+            ))}
+          </ol>
           <p>
             On the first run each Shortcut asks for your token and saves it in the Shortcuts folder (<code>iCloud Drive/Shortcuts/cpxo/token.txt</code>). Your token:
           </p>

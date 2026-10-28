@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Copy, Check, Trash, ArrowClockwise, MagnifyingGlass, DeviceMobile, WindowsLogo, AppleLogo, Terminal, Globe, X } from "@phosphor-icons/react";
+import { Copy, Check, Trash, ArrowClockwise, MagnifyingGlass, DeviceMobile, WindowsLogo, AppleLogo, Terminal, Globe, Robot, X } from "@phosphor-icons/react";
 
 type Clip = { id: number; text: string; source: string; createdAt: string };
 type Page = { items: Clip[]; nextCursor: number | null; total: number };
@@ -12,6 +12,7 @@ const SOURCES: { key: string; label: string; Icon: typeof Globe }[] = [
   { key: "mac", label: "Mac", Icon: AppleLogo },
   { key: "cli", label: "Shell", Icon: Terminal },
   { key: "web", label: "Web", Icon: Globe },
+  { key: "ai", label: "AI", Icon: Robot },
 ];
 const PAGE = 30;
 

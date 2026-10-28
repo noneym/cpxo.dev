@@ -46,7 +46,7 @@ export async function POST(req: Request) {
   const ct = (req.headers.get("content-type") ?? "").toLowerCase();
   const mime = ct.split(";")[0].trim();
   const source = req.headers.get("x-source") ?? "ios";
-  const src = ["ios", "windows", "mac", "cli", "web"].includes(source) ? source : "ios";
+  const src = ["ios", "windows", "mac", "cli", "web", "ai"].includes(source) ? source : "ios";
 
   // Text: same as POST /api/clip
   const isText = !mime || mime.startsWith("text/") || mime === "application/json" || mime === "application/x-www-form-urlencoded";

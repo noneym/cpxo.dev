@@ -4,7 +4,7 @@ import type { Prisma } from "@prisma/client";
 
 export const runtime = "nodejs";
 
-const SOURCES = new Set(["ios", "windows", "mac", "cli", "web", "unknown"]);
+const SOURCES = new Set(["ios", "windows", "mac", "cli", "web", "ai", "unknown"]);
 
 /**
  * GET /api/clip/history

@@ -57,6 +57,7 @@ export function Footer() {
           <Link href="/docs/cli" className="hover:text-paper">Shell CLI</Link>
           <Link href="/docs/windows" className="hover:text-paper">Windows app</Link>
           <Link href="/docs/mac" className="hover:text-paper">Mac app</Link>
+          <Link href="/docs/mcp" className="hover:text-paper">MCP</Link>
           <a href="https://github.com/noneym/cpxo.dev" className="hover:text-paper">GitHub</a>
         </div>
       </div>

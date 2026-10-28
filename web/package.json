@@ -12,15 +12,18 @@
     "@aws-sdk/client-s3": "^3.1156.0",
     "@aws-sdk/lib-storage": "^3.1156.0",
     "@aws-sdk/s3-request-presigner": "^3.1156.0",
+    "@modelcontextprotocol/server": "^2.4.0",
     "@phosphor-icons/react": "^2.1.10",
     "@prisma/client": "^6.19.3",
     "bcryptjs": "^3.0.3",
     "jose": "^6.2.13",
+    "mcp-handler": "^2.3.0",
     "motion": "^14.6.0",
     "nanoid": "^6.0.2",
     "next": "16.4.3",
     "react": "19.3.0",
-    "react-dom": "19.3.0"
+    "react-dom": "19.3.0",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.3.3",
@@ -30,9 +33,9 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.4.3",
+    "prisma": "^6.19.3",
     "tailwindcss": "^4",
-    "typescript": "^5",
-    "prisma": "^6.19.3"
+    "typescript": "^5"
   },
   "overrides": {
     "deepmerge-ts": "^8.0.0"

@@ -4,7 +4,7 @@ import { config } from "@/lib/config";
 
 export const runtime = "nodejs";
 
-const SOURCES = new Set(["ios", "windows", "mac", "cli", "web", "unknown"]);
+const SOURCES = new Set(["ios", "windows", "mac", "cli", "web", "ai", "unknown"]);
 
 export async function POST(req: Request) {
   const user = await apiUser(req);

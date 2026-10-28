@@ -15,6 +15,7 @@
   <a href="https://cpxo.dev/docs/mac">Mac</a> ·
   <a href="https://cpxo.dev/docs/windows">Windows</a> ·
   <a href="https://cpxo.dev/docs/cli">Shell</a> ·
+  <a href="https://cpxo.dev/docs/mcp">MCP</a> ·
   <a href="https://github.com/noneym/cpxo.dev/releases/latest">Download</a>
 </p>
 
@@ -57,6 +58,16 @@
 - **macOS**: menu bar app for Apple Silicon and Intel. Finder *Open With cpxo*, drop files on the Dock icon, `open -a cpxo file`. Ad-hoc signed (not notarized): first launch via right-click, Open.
 - Both: drag and drop onto the settings window, upload progress for large files, link copied to the clipboard when done, exponential backoff when offline, rotating log file.
 
+### AI assistants (MCP)
+
+- **Remote MCP server** at `https://cpxo.dev/mcp` (Streamable HTTP, Bearer = your API token). Works with Claude Code, Cursor, Windsurf, VS Code, Codex and, through `mcp-remote`, Claude Desktop.
+- Tools: `clipboard_latest`, `clipboard_history` (search + device filter), `clipboard_push`, `files_list`, `file_upload` (text or base64, share link back), `file_delete`.
+- Clips and uploads made by an AI are tagged with the source `ai`.
+
+```bash
+claude mcp add --transport http cpxo https://cpxo.dev/mcp --header "Authorization: Bearer cpx_YOURTOKEN"
+```
+
 ### Platform
 
 - **Accounts** with per-device API tokens; tokens work as `Authorization: Bearer`, `?t=` or in the upload path.
@@ -93,7 +104,7 @@ Windows (tray app) ──┤                     │
 shell (curl / cpxo) ─┘                     └──> MinIO / S3 (files, 7-day lifecycle)
 ```
 
-Every client talks to the same small API, documented in [docs/API.md](docs/API.md): `POST /api/clip`, `GET /api/clip?since=`, `GET /api/clip/history`, `POST /api/drop` (text or file from the phone), `PUT /up`, `GET /f/<code>`, presigned uploads for big files.
+Every client talks to the same small API, documented in [docs/API.md](docs/API.md): `POST /api/clip`, `GET /api/clip?since=`, `GET /api/clip/history`, `POST /api/drop` (text or file from the phone), `PUT /up`, `GET /f/<code>`, presigned uploads for big files, and `/mcp` for AI clients.
 
 ## Repository layout
 

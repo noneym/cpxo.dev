@@ -113,3 +113,7 @@ cpxo get k3v9xq2a       # downloads
 cpxo copy "text"        # push text to clipboard
 cpxo paste              # print the latest clipboard
 ```
+
+## MCP
+
+`https://cpxo.dev/mcp` is a remote MCP server (Streamable HTTP). Authenticate with `Authorization: Bearer <cpx_ token>`. Tools: `clipboard_latest`, `clipboard_history`, `clipboard_push`, `files_list`, `file_upload` (inline content, 25 MB), `file_delete`. See `/docs/mcp` for client configs.

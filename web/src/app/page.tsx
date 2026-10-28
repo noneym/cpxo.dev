@@ -5,7 +5,7 @@ import { CodeBlock } from "@/components/CodeBlock";
 import { ClipDemo } from "@/components/ClipDemo";
 import { Reveal } from "@/components/Reveal";
 import { config, maxFileLabel } from "@/lib/config";
-import { ArrowRight, ClockCountdown, DeviceMobile, Terminal, WindowsLogo, AppleLogo, MagnifyingGlass, DownloadSimple } from "@phosphor-icons/react/dist/ssr";
+import { ArrowRight, ClockCountdown, DeviceMobile, Terminal, WindowsLogo, AppleLogo, MagnifyingGlass, DownloadSimple, Robot } from "@phosphor-icons/react/dist/ssr";
 
 export default function Home() {
   return (
@@ -145,7 +145,7 @@ curl -JLO https://cpxo.dev/f/k3v9xq2a`}
               <div className="card h-full p-6">
                 <ClockCountdown size={28} className="text-lime" />
                 <h3 className="mt-4 text-xl font-semibold">Gone in 7 days</h3>
-                <p className="mt-2 text-sm text-mist">Every file expires. Nothing piles up, nothing leaks later.</p>
+                <p className="mt-2 text-sm text-mist">Every file expires. Nothing piles up, nothing leaks later. Your AI can see the same clipboard and files over MCP.</p>
               </div>
             </Reveal>
             <Reveal delay={0.1} className="md:col-span-2">
@@ -169,6 +169,7 @@ curl -JLO https://cpxo.dev/f/k3v9xq2a`}
               { Icon: AppleLogo, title: "Mac", body: "Menu bar app for Apple Silicon and Intel.", href: "https://github.com/noneym/cpxo.dev/releases/latest", cta: "Download dmg" },
               { Icon: WindowsLogo, title: "Windows", body: "Tray app with Explorer right-click upload.", href: "https://github.com/noneym/cpxo.dev/releases/latest", cta: "Download installer" },
               { Icon: Terminal, title: "Shell", body: "curl is enough. The cpxo script adds clipboard commands.", href: "/docs/cli", cta: "See commands" },
+              { Icon: Robot, title: "AI assistants", body: "Remote MCP server: Claude, Cursor or Codex read your clipboard and upload files for you.", href: "/docs/mcp", cta: "Connect MCP" },
             ].map((d, i) => (
               <Reveal key={d.title} delay={i * 0.05}>
                 <li className="flex flex-col gap-3 py-5 sm:flex-row sm:items-center">

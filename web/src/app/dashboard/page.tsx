@@ -28,6 +28,7 @@ export default async function DashboardPage() {
             <Link href="/docs/windows" className="btn btn-ghost h-10">Windows app</Link>
             <Link href="/docs/mac" className="btn btn-ghost h-10">Mac app</Link>
             <Link href="/docs/cli" className="btn btn-ghost h-10">Shell</Link>
+            <Link href="/docs/mcp" className="btn btn-ghost h-10">MCP</Link>
           </div>
         </div>
         {needsVerification(user) && <VerifyBanner email={user.email} />}
