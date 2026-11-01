@@ -17,6 +17,7 @@
   const uploads = $('uploads');
   let statusTimer = null;
   let isWindows = true;
+  let isMac = false;
 
   function setStatus(el, text, kind) {
     el.textContent = '';
@@ -39,7 +40,7 @@
       notifications: fields.notifications.checked,
       launchAtLogin: fields.launchAtLogin.checked,
     };
-    if (isWindows) out.contextMenu = fields.contextMenu.checked;
+    if (isWindows || isMac) out.contextMenu = fields.contextMenu.checked;
     return out;
   }
 
@@ -54,8 +55,12 @@
     $('devHint').hidden = !!s.isPackaged;
     // The Explorer context menu is Windows only; macOS gets Finder "Open With" instead.
     isWindows = !s.platform || s.platform === 'win32';
-    $('contextMenuRow').hidden = !isWindows;
-    $('macHint').hidden = s.platform !== 'darwin';
+    isMac = s.platform === 'darwin';
+    $('contextMenuRow').hidden = !(isWindows || isMac);
+    $('contextMenuLabel').textContent = isMac
+      ? 'Add "Upload to cpxo and copy link" to the Finder right-click menu (Quick Actions)'
+      : 'Add "Upload to cpxo" to the Explorer right-click menu';
+    $('macHint').hidden = !isMac;
   }
 
   async function load() {

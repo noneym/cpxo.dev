@@ -76,7 +76,8 @@ turns `build/icon.png` into the `.icns` itself, so no Xcode tooling is needed.
 - cpxo is a menu bar app (`LSUIElement`): no Dock icon, no Cmd+Tab entry. The Dock icon appears
   only while the Settings window is open. Closing Settings leaves the app running in the menu
   bar; quit from the menu bar menu (Quit).
-- Upload from Finder: right-click any file, Open With, cpxo. The app registers a catch-all
+- Upload from Finder: right-click any file, Quick Actions, "Upload to cpxo and copy link" (an Automator
+  workflow the app writes to `~/Library/Services`; toggle in Settings). Or Open With, cpxo: the app registers a catch-all
   document type (`public.item`) so it is offered for every file type. Dropping files on the
   Dock icon (while visible) and `open -a cpxo <file>` upload the same way; the link is copied
   when the upload finishes.

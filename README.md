@@ -55,7 +55,7 @@
 ### Desktop app (Windows and macOS)
 
 - **Windows**: tray app, NSIS installer. Explorer right-click: *Upload to cpxo and copy link*. Launch at login.
-- **macOS**: menu bar app for Apple Silicon and Intel. Finder *Open With cpxo*, drop files on the Dock icon, `open -a cpxo file`. Developer ID signed and notarized from 0.3.0.
+- **macOS**: menu bar app for Apple Silicon and Intel. Finder right-click, Quick Actions, *Upload to cpxo and copy link*; also *Open With cpxo*, Dock drops and `open -a cpxo file`. Developer ID signed and notarized from 0.3.0.
 - Both: drag and drop onto the settings window, upload progress for large files, link copied to the clipboard when done, exponential backoff when offline, rotating log file.
 
 ### AI assistants (MCP)

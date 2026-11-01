@@ -37,8 +37,12 @@ export default function MacDoc() {
 
       <Step n={4} title="Upload and copy link">
         <p>
-          Right-click a file in Finder, <strong>Open With</strong>, <strong>cpxo</strong>. Or drop files on the Dock icon, on the settings window, or use <strong>Upload file</strong> in the menu.
+          Right-click a file in Finder, <strong>Quick Actions</strong>, <strong>Upload to cpxo and copy link</strong>. The app installs this Quick Action on first launch (toggle it in Settings).
+          Also: <strong>Open With</strong>, <strong>cpxo</strong>; drop files on the Dock icon or on the settings window; or <strong>Upload file</strong> in the menu.
           The share link is on your clipboard when the upload finishes.
+        </p>
+        <p>
+          If the Quick Action is missing from the menu: System Settings, General, Login Items &amp; Extensions, Extensions, Finder, and tick <strong>Upload to cpxo and copy link</strong>.
         </p>
         <p>From a terminal:</p>
         <CodeBlock code={`open -a cpxo ~/Desktop/report.pdf`} />

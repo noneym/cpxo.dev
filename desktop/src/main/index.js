@@ -9,6 +9,7 @@ const {
 const log = require('./logger');
 const { SettingsStore } = require('./settings-store');
 const { ClipboardSync } = require('./clipboard');
+const quickaction = require('./quickaction');
 const { AppTray } = require('./tray');
 const { uploadFile, formatBytes } = require('./uploader');
 const registry = require('./registry');
@@ -140,6 +141,10 @@ async function main() {
   store.on('change', onSettingChanged);
   applyLoginItem();
   if (IS_WIN && store.get('contextMenu')) registry.syncIfRegistered();
+  if (IS_MAC) {
+    // Finder Quick Action: install on first run (default on), keep it current afterwards.
+    (store.get('contextMenu') ? quickaction.install() : quickaction.uninstall()).catch((err) => log.error('quickaction', err));
+  }
 
   if (store.isSignedIn && store.get('syncClipboard')) sync.start();
 
@@ -171,7 +176,14 @@ function onSettingChanged(key, value) {
       applyLoginItem();
       break;
     case 'contextMenu':
-      if (!IS_WIN) break; // Explorer only; Finder uses "Open With" (see package.json CFBundleDocumentTypes)
+      if (IS_MAC) {
+        (value ? quickaction.install() : quickaction.uninstall()).catch((err) => {
+          log.error('quickaction', err);
+          notify('Quick Action', `Could not update the Finder Quick Action: ${err.message}`);
+        });
+        break;
+      }
+      if (!IS_WIN) break;
       (value ? registry.register() : registry.unregister()).catch((err) => {
         log.error('registry', err);
         notify('Context menu', `Could not update Explorer menu: ${err.message}`);
@@ -452,7 +464,7 @@ function ipc() {
     for (const k of ['launchAtLogin', 'syncClipboard', 'notifications', 'contextMenu']) {
       if (typeof patch[k] === 'boolean') clean[k] = patch[k];
     }
-    if (!IS_WIN) delete clean.contextMenu; // Explorer menu does not exist elsewhere
+    if (!IS_WIN && !IS_MAC) delete clean.contextMenu; // Explorer menu / Finder Quick Action only
     store.update(clean);
     return store.all();
   });

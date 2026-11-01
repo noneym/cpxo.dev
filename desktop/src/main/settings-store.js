@@ -10,7 +10,7 @@ const DEFAULTS = {
   launchAtLogin: false,
   syncClipboard: true,
   notifications: true,
-  contextMenu: false,
+  contextMenu: process.platform === 'darwin', // Explorer menu (Windows) / Finder Quick Action (macOS, on by default)
   lastClipId: 0,
 };
 
