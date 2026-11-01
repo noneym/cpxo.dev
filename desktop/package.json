@@ -1,6 +1,6 @@
 {
   "name": "cpxo-desktop",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "description": "cpxo desktop: clipboard sync and file upload for Windows and macOS",
   "main": "src/main/index.js",
   "private": true,
@@ -65,7 +65,7 @@
         }
       ],
       "artifactName": "cpxo-${version}-mac-${arch}.${ext}",
-      "hardenedRuntime": false,
+      "hardenedRuntime": true,
       "gatekeeperAssess": false,
       "extendInfo": {
         "LSUIElement": true,
@@ -82,7 +82,9 @@
           }
         ]
       },
-      "identity": null
+      "entitlements": "build/entitlements.mac.plist",
+      "entitlementsInherit": "build/entitlements.mac.plist",
+      "notarize": true
     },
     "dmg": {
       "artifactName": "cpxo-${version}-mac-${arch}.dmg"

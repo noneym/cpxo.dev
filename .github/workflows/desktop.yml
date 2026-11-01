@@ -43,7 +43,13 @@ jobs:
       run:
         working-directory: desktop
     env:
-      CSC_IDENTITY_AUTO_DISCOVERY: "false" # unsigned build; see desktop/README.md
+      # Developer ID signing + notarization. When the secrets are missing (forks),
+      # electron-builder skips signing and scripts/afterPack.js ad-hoc signs instead.
+      CSC_LINK: ${{ secrets.MAC_CSC_LINK }}
+      CSC_KEY_PASSWORD: ${{ secrets.MAC_CSC_KEY_PASSWORD }}
+      APPLE_ID: ${{ secrets.APPLE_ID }}
+      APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+      APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -52,9 +58,15 @@ jobs:
           cache: npm
           cache-dependency-path: desktop/package-lock.json
       - run: npm ci
-      - name: Build dmg (Apple Silicon + Intel)
+      - name: Build dmg (Apple Silicon + Intel), sign and notarize
         run: npm run dist:mac
-      - run: ls -la dist
+      - name: Verify signature
+        run: |
+          ls -la dist
+          for app in dist/mac*/cpxo.app; do
+            codesign --verify --deep --strict --verbose=2 "$app"
+            spctl --assess --type execute --verbose=2 "$app" || echo "::warning::$app is not notarized (no certificate secrets?)"
+          done
       - uses: actions/upload-artifact@v4
         with:
           name: cpxo-mac

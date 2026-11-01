@@ -18,11 +18,10 @@ export default function MacDoc() {
           <code>cpxo-x.y.z-mac-x64.dmg</code> for Intel Macs. Drag cpxo to Applications.
         </p>
         <p>
-          The build is not notarized, so the first launch is blocked by Gatekeeper. Either right-click the app and choose <strong>Open</strong>, or run:
+          From 0.3.0 the app is signed with a Developer ID certificate and notarized by Apple, so it opens like any other app.
+          Older builds (0.2.x) were not: right-click the app and choose <strong>Open</strong>, or run:
         </p>
         <CodeBlock code={`xattr -d com.apple.quarantine /Applications/cpxo.app`} />
-        <p>If macOS says the app is damaged (builds before 0.2.1), fix it with:</p>
-        <CodeBlock code={`xattr -cr /Applications/cpxo.app && codesign --force --deep --sign - /Applications/cpxo.app`} />
       </Step>
 
       <Step n={2} title="Sign in">

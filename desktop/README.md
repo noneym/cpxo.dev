@@ -65,11 +65,14 @@ so `npm run dist` works without regenerating them.
 Build on a Mac with `npm run dist:mac` (Intel and Apple Silicon dmg + zip). electron-builder
 turns `build/icon.png` into the `.icns` itself, so no Xcode tooling is needed.
 
-- The app is **ad-hoc signed, not notarized** (`scripts/afterPack.js` runs `codesign --sign -`;
-  without any signature Apple Silicon reports the app as "damaged"). On first launch Gatekeeper
-  still warns: right-click `cpxo.app` and choose Open, or clear the quarantine flag once:
-  `xattr -d com.apple.quarantine /Applications/cpxo.app`. If an older build already says
-  "damaged": `xattr -cr /Applications/cpxo.app && codesign --force --deep --sign - /Applications/cpxo.app`.
+- **Signing and notarization.** CI signs with a Developer ID Application certificate and
+  notarizes with Apple when these repository secrets exist: `MAC_CSC_LINK` (base64 of the
+  exported `.p12`), `MAC_CSC_KEY_PASSWORD`, `APPLE_ID`, `APPLE_APP_SPECIFIC_PASSWORD`,
+  `APPLE_TEAM_ID`. The build uses the hardened runtime with `build/entitlements.mac.plist`
+  (JIT and unsigned executable memory for Electron, library validation off, user-selected files).
+  Without the secrets (forks, local builds) `scripts/afterPack.js` ad-hoc signs instead, and the
+  first launch needs right-click, Open (or `xattr -d com.apple.quarantine /Applications/cpxo.app`).
+  To sign locally: `CSC_LINK=... CSC_KEY_PASSWORD=... APPLE_ID=... APPLE_APP_SPECIFIC_PASSWORD=... APPLE_TEAM_ID=... npm run dist:mac`.
 - cpxo is a menu bar app (`LSUIElement`): no Dock icon, no Cmd+Tab entry. The Dock icon appears
   only while the Settings window is open. Closing Settings leaves the app running in the menu
   bar; quit from the menu bar menu (Quit).
