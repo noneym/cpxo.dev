@@ -62,8 +62,7 @@ jobs:
         run: |
           set -o pipefail
           if ! npm run dist:mac 2>&1 | tee build.log; then
-            echo "::error title=dist:mac failed::$(grep -iE 'error|fail|notariz|identity|keychain|codesign' build.log | grep -v 'npm ERR' | tail -n 12 | tr '
-' ' ' | cut -c1-1500)"
+            echo "::error title=dist:mac failed::$(grep -iE 'error|fail|notariz|identity|keychain|codesign' build.log | grep -v 'npm ERR' | tail -n 12 | tr '\n' ' ' | cut -c1-1500)"
             exit 1
           fi
           grep -iE 'signing|notariz|identity|skipped' build.log | head -n 20 | while read -r l; do echo "::notice title=sign::$l"; done
