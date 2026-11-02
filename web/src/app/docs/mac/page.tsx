@@ -17,11 +17,7 @@ export default function MacDoc() {
           Download the dmg from <a className="text-lime hover:underline" href={RELEASES}>GitHub Releases</a>: <code>cpxo-x.y.z-mac-arm64.dmg</code> for M1 and later,
           <code>cpxo-x.y.z-mac-x64.dmg</code> for Intel Macs. Drag cpxo to Applications.
         </p>
-        <p>
-          From 0.3.0 the app is signed with a Developer ID certificate and notarized by Apple, so it opens like any other app.
-          Older builds (0.2.x) were not: right-click the app and choose <strong>Open</strong>, or run:
-        </p>
-        <CodeBlock code={`xattr -d com.apple.quarantine /Applications/cpxo.app`} />
+        <p>The app is signed with a Developer ID certificate and notarized by Apple, so it opens like any other app. Updates install themselves from the menu bar.</p>
       </Step>
 
       <Step n={2} title="Sign in">

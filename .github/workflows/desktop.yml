@@ -35,7 +35,10 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: cpxo-windows
-          path: desktop/dist/cpxo-setup-*.exe
+          path: |
+            desktop/dist/cpxo-setup-*.exe
+            desktop/dist/cpxo-setup-*.exe.blockmap
+            desktop/dist/latest.yml
 
   mac:
     runs-on: macos-latest
@@ -79,6 +82,8 @@ jobs:
           path: |
             desktop/dist/*.dmg
             desktop/dist/*.zip
+            desktop/dist/*.blockmap
+            desktop/dist/latest-mac.yml
 
   release:
     needs: [windows, mac]
@@ -93,6 +98,10 @@ jobs:
         with:
           files: |
             assets/cpxo-windows/*.exe
+            assets/cpxo-windows/*.blockmap
+            assets/cpxo-windows/latest.yml
             assets/cpxo-mac/*.dmg
             assets/cpxo-mac/*.zip
+            assets/cpxo-mac/*.blockmap
+            assets/cpxo-mac/latest-mac.yml
           generate_release_notes: true

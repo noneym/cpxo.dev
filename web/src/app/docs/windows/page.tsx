@@ -13,7 +13,7 @@ export default function WindowsDoc() {
       <Step n={1} title="Install">
         <p>
           Download <a className="text-lime hover:underline" href="https://github.com/noneym/cpxo.dev/releases/latest">cpxo-setup.exe</a> from GitHub Releases and run it.
-          Windows SmartScreen may warn because the installer is not code-signed yet. Choose <strong>More info</strong>, then <strong>Run anyway</strong>.
+          Windows SmartScreen may warn because the installer is not code-signed yet. Choose <strong>More info</strong>, then <strong>Run anyway</strong>. After that the app updates itself.
         </p>
         <p>Or build it yourself:</p>
         <CodeBlock code={`git clone https://github.com/noneym/cpxo.dev.git

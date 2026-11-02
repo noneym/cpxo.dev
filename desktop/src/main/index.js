@@ -10,6 +10,7 @@ const log = require('./logger');
 const { SettingsStore } = require('./settings-store');
 const { ClipboardSync } = require('./clipboard');
 const quickaction = require('./quickaction');
+const updater = require('./updater');
 const { AppTray } = require('./tray');
 const { uploadFile, formatBytes } = require('./uploader');
 const registry = require('./registry');
@@ -134,8 +135,10 @@ async function main() {
     onToggleSync: (checked) => store.set('syncClipboard', checked),
     onDashboard: () => shell.openExternal(`${store.serverUrl}/dashboard`),
     onSettings: openSettings,
+    onUpdate: () => (updater.readyVersion() ? updater.quitAndInstall() : updater.check(true)),
     onQuit: () => { quitting = true; app.quit(); },
   });
+  updater.init({ notify, onStateChange: (update) => tray.update({ update }) });
   tray.update({ signedIn: store.isSignedIn, syncClipboard: store.get('syncClipboard') });
 
   store.on('change', onSettingChanged);

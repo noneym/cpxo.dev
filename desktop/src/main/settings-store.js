@@ -7,10 +7,10 @@ const { EventEmitter } = require('events');
 const DEFAULTS = {
   serverUrl: 'https://cpxo.dev',
   token: '',
-  launchAtLogin: false,
+  launchAtLogin: true,
   syncClipboard: true,
   notifications: true,
-  contextMenu: process.platform === 'darwin', // Explorer menu (Windows) / Finder Quick Action (macOS, on by default)
+  contextMenu: true, // Explorer menu (Windows) / Finder Quick Action (macOS)
   lastClipId: 0,
 };
 

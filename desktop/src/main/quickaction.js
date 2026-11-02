@@ -283,9 +283,14 @@ function documentWflow() {
 }
 
 function refreshServices() {
-  // Tells the pasteboard server to rescan ~/Library/Services so the item shows up without a logout.
-  execFile('/System/Library/CoreServices/pbs', ['-update'], () => {});
-  execFile('/System/Library/CoreServices/pbs', ['-flush'], () => {});
+  // Mark the service enabled in the Services preferences (context menu + Services menu),
+  // then make the pasteboard server rescan ~/Library/Services so it shows up without a logout.
+  const key = `(null) - ${NAME} - runWorkflowAsService`;
+  execFile('defaults', ['write', 'pbs', 'NSServicesStatus', '-dict-add', key, '{ enabled_context_menu = 1; enabled_services_menu = 1; presentation_modes = { ContextMenu = 1; ServicesMenu = 1; }; }'], () => {
+    execFile('/System/Library/CoreServices/pbs', ['-flush'], () => {
+      execFile('/System/Library/CoreServices/pbs', ['-update'], () => {});
+    });
+  });
 }
 
 function isInstalled() {

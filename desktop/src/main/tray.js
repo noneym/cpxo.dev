@@ -89,6 +89,15 @@ class AppTray {
       { type: 'separator' },
       { label: 'Open dashboard', click: h.onDashboard },
       { label: 'Settings', click: h.onSettings },
+      {
+        label: this.state.update && this.state.update.status === 'ready'
+          ? `Restart to update to ${this.state.update.version}`
+          : this.state.update && this.state.update.status === 'downloading'
+            ? `Downloading update ${this.state.update.version}...`
+            : 'Check for updates',
+        enabled: !(this.state.update && this.state.update.status === 'downloading'),
+        click: h.onUpdate,
+      },
       { type: 'separator' },
       { label: 'Quit', click: h.onQuit },
     );

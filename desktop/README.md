@@ -19,6 +19,12 @@ one-click file sharing. Electron, plain JavaScript, no native modules.
 - Logs rotate in `<userData>/logs/cpxo.log`; settings live in `<userData>/settings.json`, where
   `<userData>` is `%APPDATA%\cpxo` on Windows and `~/Library/Application Support/cpxo` on macOS.
 
+## Auto-update
+
+`electron-updater` checks GitHub Releases 20 s after launch and every 6 hours, downloads in the
+background and installs on quit (or from the tray: "Restart to update"). Requires the release to
+carry `latest.yml` (Windows) and `latest-mac.yml` + zip (macOS); CI attaches them. Dev builds skip it.
+
 ## Layout
 
 ```
@@ -70,8 +76,8 @@ turns `build/icon.png` into the `.icns` itself, so no Xcode tooling is needed.
   exported `.p12`), `MAC_CSC_KEY_PASSWORD`, `APPLE_ID`, `APPLE_APP_SPECIFIC_PASSWORD`,
   `APPLE_TEAM_ID`. The build uses the hardened runtime with `build/entitlements.mac.plist`
   (JIT and unsigned executable memory for Electron, library validation off, user-selected files).
-  Without the secrets (forks, local builds) `scripts/afterPack.js` ad-hoc signs instead, and the
-  first launch needs right-click, Open (or `xattr -d com.apple.quarantine /Applications/cpxo.app`).
+  Without the secrets (forks, local builds) `scripts/afterPack.js` ad-hoc signs instead (Gatekeeper then
+  asks for right-click, Open on first launch).
   To sign locally: `CSC_LINK=... CSC_KEY_PASSWORD=... APPLE_ID=... APPLE_APP_SPECIFIC_PASSWORD=... APPLE_TEAM_ID=... npm run dist:mac`.
 - cpxo is a menu bar app (`LSUIElement`): no Dock icon, no Cmd+Tab entry. The Dock icon appears
   only while the Settings window is open. Closing Settings leaves the app running in the menu

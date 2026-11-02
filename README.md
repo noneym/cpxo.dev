@@ -56,7 +56,7 @@
 
 - **Windows**: tray app, NSIS installer. Explorer right-click: *Upload to cpxo and copy link*. Launch at login.
 - **macOS**: menu bar app for Apple Silicon and Intel. Finder right-click, Quick Actions, *Upload to cpxo and copy link*; also *Open With cpxo*, Dock drops and `open -a cpxo file`. Developer ID signed and notarized from 0.3.0.
-- Both: drag and drop onto the settings window, upload progress for large files, link copied to the clipboard when done, exponential backoff when offline, rotating log file.
+- Both: auto-update from GitHub Releases, drag and drop onto the settings window, upload progress for large files, link copied to the clipboard when done, exponential backoff when offline, rotating log file.
 
 ### AI assistants (MCP)
 
@@ -156,7 +156,7 @@ npm run dist:win   # dist/cpxo-setup-<version>.exe              (on Windows)
 npm run dist:mac   # dist/cpxo-<version>-mac-{arm64,x64}.dmg    (on a Mac)
 ```
 
-Pushing a tag like `v0.3.0` builds both on GitHub Actions and attaches them to a release. The Mac build is signed and notarized when the `MAC_CSC_LINK`, `MAC_CSC_KEY_PASSWORD`, `APPLE_ID`, `APPLE_APP_SPECIFIC_PASSWORD` and `APPLE_TEAM_ID` secrets are set (see `desktop/README.md`).
+Pushing a tag like `v0.3.0` builds both on GitHub Actions and attaches them to a release. Releases carry `latest.yml` / `latest-mac.yml`, so installed apps update themselves. The Mac build is signed and notarized when the `MAC_CSC_LINK`, `MAC_CSC_KEY_PASSWORD`, `APPLE_ID`, `APPLE_APP_SPECIFIC_PASSWORD` and `APPLE_TEAM_ID` secrets are set (see `desktop/README.md`).
 
 ## iOS Shortcuts
 
