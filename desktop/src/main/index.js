@@ -319,6 +319,7 @@ async function uploadOne(filePath) {
     });
     sync.markOwnWrite(result.url);
     await clipboard.writeText(result.url);
+    sync.pushNow(result.url); // the watcher ignores our own write, so send the link to the other devices explicitly
     notify('Link copied', result.url, () => shell.openExternal(result.url));
     sendToSettings('upload:done', { name, path: filePath, url: result.url, size: result.size });
   } catch (err) {

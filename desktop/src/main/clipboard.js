@@ -98,6 +98,9 @@ class ClipboardSync extends EventEmitter {
         if (text && text.trim() && text !== this.lastSetText) {
           this.queuePush(text);
         }
+        // The echo guard only covers the write we just made. Once the clipboard holds
+        // something else, copying the same text again is a real copy and must sync.
+        if (text !== this.lastSetText) this.lastSetText = null;
       }
     } catch (err) {
       log.warn('clipboard: readText failed', err.message);
@@ -209,6 +212,12 @@ class ClipboardSync extends EventEmitter {
   markOwnWrite(text) {
     this.lastSetText = text;
     this.lastLocalText = text;
+  }
+
+  /** Send text to the server regardless of the watcher (e.g. a share link after an upload). */
+  pushNow(text) {
+    if (!this.running || !text) return;
+    this.queuePush(text);
   }
 }
 
