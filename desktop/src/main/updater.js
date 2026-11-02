@@ -11,6 +11,7 @@ let autoUpdater = null;
 let downloaded = null; // version string once an update is ready
 let notifyFn = () => {};
 let onState = () => {};
+let interactiveCheck = false;
 
 function init({ notify, onStateChange }) {
   notifyFn = notify || notifyFn;
@@ -32,8 +33,13 @@ function init({ notify, onStateChange }) {
   autoUpdater.on('update-available', (info) => {
     log.info(`updater: downloading ${info.version}`);
     onState({ status: 'downloading', version: info.version });
+    if (interactiveCheck) notifyFn(`Downloading cpxo ${info.version}`, 'You will be told when it is ready to install.');
   });
-  autoUpdater.on('update-not-available', () => onState({ status: 'idle' }));
+  autoUpdater.on('update-not-available', () => {
+    onState({ status: 'idle' });
+    if (interactiveCheck) notifyFn('Up to date', `cpxo ${app.getVersion()} is the latest version.`);
+    interactiveCheck = false;
+  });
   autoUpdater.on('update-downloaded', (info) => {
     downloaded = info.version;
     onState({ status: 'ready', version: info.version });
@@ -58,13 +64,14 @@ async function check(interactive) {
     if (interactive) quitAndInstall();
     return;
   }
+  interactiveCheck = !!interactive;
   try {
-    const r = await autoUpdater.checkForUpdates();
-    const latest = r && r.updateInfo && r.updateInfo.version;
-    if (interactive && latest && latest === app.getVersion()) notifyFn('Up to date', `cpxo ${latest} is the latest version.`);
+    await autoUpdater.checkForUpdates();
   } catch (err) {
     log.warn(`updater: check failed ${err && err.message}`);
-    if (interactive) notifyFn('Update check failed', String(err && err.message).slice(0, 120));
+    const msg = String(err && err.message);
+    if (interactive) notifyFn('Update check failed', /NAME_NOT_RESOLVED|ENOTFOUND|INTERNET_DISCONNECTED/.test(msg) ? 'No connection to github.com (DNS). Try again in a moment.' : msg.slice(0, 120));
+    interactiveCheck = false;
   }
 }
 
