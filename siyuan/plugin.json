@@ -1,0 +1,25 @@
+{
+  "name": "cpxo-siyuan",
+  "author": "noneym",
+  "url": "https://github.com/noneym/cpxo.dev",
+  "version": "0.1.0",
+  "minAppVersion": "3.0.0",
+  "backends": ["all"],
+  "frontends": ["all"],
+  "displayName": {
+    "default": "cpxo upload",
+    "en_US": "cpxo upload",
+    "zh_CN": "cpxo 上传"
+  },
+  "description": {
+    "default": "Right-click an image or attachment, or open the block menu, to upload it to cpxo.dev and copy a 7-day share link.",
+    "en_US": "Right-click an image or attachment, or open the block menu, to upload it to cpxo.dev and copy a 7-day share link.",
+    "zh_CN": "右键图片或附件，或打开块菜单，上传到 cpxo.dev 并复制 7 天有效的分享链接。"
+  },
+  "readme": {
+    "default": "README.md",
+    "en_US": "README.md"
+  },
+  "funding": {},
+  "keywords": ["cpxo", "upload", "share", "link", "clipboard", "image"]
+}

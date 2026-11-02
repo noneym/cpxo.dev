@@ -16,6 +16,7 @@
   <a href="https://cpxo.dev/docs/windows">Windows</a> ·
   <a href="https://cpxo.dev/docs/cli">Shell</a> ·
   <a href="https://cpxo.dev/docs/mcp">MCP</a> ·
+  <a href="https://cpxo.dev/docs/siyuan">SiYuan</a> ·
   <a href="https://github.com/noneym/cpxo.dev/releases/latest">Download</a>
 </p>
 
@@ -68,6 +69,11 @@
 claude mcp add --transport http cpxo https://cpxo.dev/mcp --header "Authorization: Bearer cpx_YOURTOKEN"
 ```
 
+### SiYuan notes (plugin)
+
+- **cpxo upload** plugin for [SiYuan](https://github.com/siyuan-note/siyuan): *Upload to cpxo and copy link* in the image menu, the attachment-link menu and the block icon menu. Selecting several blocks uploads every asset inside and copies all links.
+- Ships as `cpxo-siyuan-<version>.zip` on every release; extract into `<workspace>/data/plugins/cpxo-siyuan/`. Source in [`siyuan/`](siyuan/).
+
 ### Platform
 
 - **Accounts** with per-device API tokens; tokens work as `Authorization: Bearer`, `?t=` or in the upload path.
@@ -112,6 +118,7 @@ Every client talks to the same small API, documented in [docs/API.md](docs/API.m
 | ------------ | -------------------------------------------------------------------- |
 | `web/`       | Next.js 16 site + API. Prisma on MariaDB, MinIO through the S3 SDK   |
 | `desktop/`   | Electron app for Windows (NSIS) and macOS (dmg, arm64 + x64)         |
+| `siyuan/`    | SiYuan plugin (TypeScript + Vite), zipped by the desktop workflow    |
 | `shortcuts/` | Generator for the iOS Shortcuts (`build.py`) and signing notes       |
 | `cli/cpxo`   | POSIX shell client, served at `/cli`                                 |
 | `design/`    | Logo, mono variant and brand board                                   |

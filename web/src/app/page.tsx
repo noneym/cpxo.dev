@@ -5,7 +5,7 @@ import { CodeBlock } from "@/components/CodeBlock";
 import { ClipDemo } from "@/components/ClipDemo";
 import { Reveal } from "@/components/Reveal";
 import { config, maxFileLabel } from "@/lib/config";
-import { ArrowRight, ClockCountdown, DeviceMobile, Terminal, WindowsLogo, AppleLogo, MagnifyingGlass, DownloadSimple, Robot, CursorClick, CloudArrowUp, LinkSimple } from "@phosphor-icons/react/dist/ssr";
+import { ArrowRight, ClockCountdown, DeviceMobile, Terminal, WindowsLogo, AppleLogo, MagnifyingGlass, DownloadSimple, Robot, CursorClick, CloudArrowUp, LinkSimple, Notebook } from "@phosphor-icons/react/dist/ssr";
 
 export default function Home() {
   return (
@@ -199,6 +199,7 @@ curl -JLO https://cpxo.dev/f/k3v9xq2a`}
               { Icon: WindowsLogo, title: "Windows", body: "Tray app with Explorer right-click upload.", href: "https://github.com/noneym/cpxo.dev/releases/latest", cta: "Download installer" },
               { Icon: Terminal, title: "Shell", body: "curl is enough. The cpxo script adds clipboard commands.", href: "/docs/cli", cta: "See commands" },
               { Icon: Robot, title: "AI assistants", body: "Remote MCP server: Claude, Cursor or Codex read your clipboard and upload files for you.", href: "/docs/mcp", cta: "Connect MCP" },
+              { Icon: Notebook, title: "SiYuan notes", body: "Plugin: share any image or attachment from a note with one click.", href: "/docs/siyuan", cta: "Get plugin" },
             ].map((d, i) => (
               <Reveal key={d.title} delay={i * 0.05}>
                 <li className="flex flex-col gap-3 py-5 sm:flex-row sm:items-center">

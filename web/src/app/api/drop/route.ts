@@ -6,10 +6,20 @@ import { apiUser, unauthorized } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { config } from "@/lib/config";
 import { cleanName, storeStream } from "@/lib/upload";
+import { preflight, withCors } from "@/lib/cors";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export const maxDuration = 3600;
+
+// Browser clients (SiYuan plugin) preflight the cross-origin POST.
+export function OPTIONS() {
+  return preflight();
+}
+
+export async function POST(req: Request) {
+  return withCors(await handle(req));
+}
 
 const EXT: Record<string, string> = {
   "image/jpeg": "jpg",
@@ -38,7 +48,7 @@ function plain(text: string, status = 200) {
   return new Response(text + "\n", { status, headers: { "content-type": "text/plain; charset=utf-8" } });
 }
 
-export async function POST(req: Request) {
+async function handle(req: Request) {
   const user = await apiUser(req);
   if (!user) return unauthorized();
 

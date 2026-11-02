@@ -1,0 +1,16 @@
+{
+  "upload": "Upload to cpxo and copy link",
+  "uploadMany": "Upload {n} files to cpxo and copy links",
+  "uploading": "Uploading {name} to cpxo…",
+  "copied": "cpxo link copied",
+  "copiedMany": "{n} cpxo links copied",
+  "noToken": "Set your cpxo API token first: Settings → Marketplace → Downloaded → cpxo upload → Settings",
+  "failed": "cpxo upload failed: {err}",
+  "server": "Server",
+  "serverDesc": "Your cpxo instance. Leave as is for cpxo.dev.",
+  "token": "API token",
+  "tokenDesc": "From the dashboard at cpxo.dev. Uploads and links are tied to this account.",
+  "test": "Test connection",
+  "testOk": "Signed in as {email}",
+  "testFail": "Token rejected: {err}"
+}

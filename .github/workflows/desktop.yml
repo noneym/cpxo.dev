@@ -3,10 +3,10 @@ name: desktop
 on:
   push:
     branches: [main]
-    paths: ["desktop/**", ".github/workflows/desktop.yml"]
+    paths: ["desktop/**", "siyuan/**", ".github/workflows/desktop.yml"]
     tags: ["v*"]
   pull_request:
-    paths: ["desktop/**"]
+    paths: ["desktop/**", "siyuan/**"]
   workflow_dispatch:
 
 permissions:
@@ -85,8 +85,31 @@ jobs:
             desktop/dist/*.blockmap
             desktop/dist/latest-mac.yml
 
+  siyuan:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: siyuan
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: siyuan/package-lock.json
+      - run: npm ci
+      - name: Audit dependencies
+        run: npm audit --audit-level=high
+      - run: npm run typecheck
+      - name: Build plugin zip
+        run: npm run build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cpxo-siyuan
+          path: siyuan/dist/cpxo-siyuan-*.zip
+
   release:
-    needs: [windows, mac]
+    needs: [windows, mac, siyuan]
     if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     steps:
@@ -104,4 +127,5 @@ jobs:
             assets/cpxo-mac/*.zip
             assets/cpxo-mac/*.blockmap
             assets/cpxo-mac/latest-mac.yml
+            assets/cpxo-siyuan/*.zip
           generate_release_notes: true
