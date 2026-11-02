@@ -1,6 +1,6 @@
 {
   "name": "cpxo-desktop",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "cpxo desktop: clipboard sync and file upload for Windows and macOS",
   "main": "src/main/index.js",
   "private": true,
@@ -9,9 +9,9 @@
   "scripts": {
     "start": "electron .",
     "icons": "node scripts/icons.js",
-    "dist": "electron-builder --win nsis",
-    "dist:win": "electron-builder --win nsis",
-    "dist:mac": "electron-builder --mac"
+    "dist": "electron-builder --win nsis --publish never",
+    "dist:win": "electron-builder --win nsis --publish never",
+    "dist:mac": "electron-builder --mac --publish never"
   },
   "devDependencies": {
     "electron": "^45.0.0",
