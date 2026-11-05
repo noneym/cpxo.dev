@@ -34,7 +34,7 @@
 ### Clipboard
 
 - **Universal clipboard.** Copy on the iPhone, Mac or Windows, paste on any of the others. Desktop apps sync within two seconds and show a notification; each device ignores what it sent itself, so nothing loops.
-- **History up to 10,000 clips** per account on the dashboard: filter by device (iPhone, Mac, Windows, shell, web), full-text search, cursor paging, per-entry copy and delete, clear with the current filter. Identical consecutive clips are not stored twice.
+- **History up to 10,000 clips** per account on the dashboard: filter by device (iPhone, Mac, Windows, shell, web), cursor paging, per-entry copy and delete, clear with the current filter. Identical consecutive clips are not stored twice.
 - **Shell clipboard.** `cpxo copy "text"` and `cpxo paste` from any Linux box.
 
 ### iPhone
@@ -62,7 +62,7 @@
 ### AI assistants (MCP)
 
 - **Remote MCP server** at `https://cpxo.dev/mcp` (Streamable HTTP, Bearer = your API token). Works with Claude Code, Cursor, Windsurf, VS Code, Codex and, through `mcp-remote`, Claude Desktop.
-- Tools: `clipboard_latest`, `clipboard_history` (search + device filter), `clipboard_push`, `files_list`, `file_upload` (text or base64, share link back), `file_delete`.
+- Tools: `clipboard_latest`, `clipboard_history` (device filter, paging), `clipboard_push`, `files_list`, `file_upload` (text or base64, share link back), `file_delete`.
 - Clips and uploads made by an AI are tagged with the source `ai`.
 
 ```bash
@@ -76,6 +76,7 @@ claude mcp add --transport http cpxo https://cpxo.dev/mcp --header "Authorizatio
 
 ### Platform
 
+- **Encrypted clipboard at rest.** Every clip is stored with AES-256-GCM (random IV per row, user id bound as associated data). The key comes from `CLIP_KEY` or is derived from `SESSION_SECRET` with HKDF; rows from before are encrypted on startup. All traffic is HTTPS (TLS 1.3).
 - **Accounts** with per-device API tokens; tokens work as `Authorization: Bearer`, `?t=` or in the upload path.
 - **Cloudflare Turnstile** on the register form (server-side verified, optional).
 - **Email verification and password reset** through Cloudflare Email Service (optional; unverified accounts cannot use API tokens until they confirm).

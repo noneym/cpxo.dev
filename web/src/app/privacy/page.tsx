@@ -77,7 +77,7 @@ export default function Privacy() {
 
       <Section title="Security">
         <p>
-          Everything travels over HTTPS. Passwords are hashed, files are served through short-lived signed links,
+          Everything travels over HTTPS (TLS 1.3). Clipboard entries are stored encrypted with AES-256-GCM, and the key is kept outside the database. Passwords are hashed, files are served through short-lived signed links,
           and every API call is tied to your token. Anyone holding a share link can download that file until it
           expires, so share links with care.
         </p>

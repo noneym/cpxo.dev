@@ -1,6 +1,7 @@
 import { apiUser, unauthorized } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { config } from "@/lib/config";
+import { createClip, latestClip } from "@/lib/clipcrypt";
 
 export const runtime = "nodejs";
 
@@ -32,11 +33,11 @@ export async function POST(req: Request) {
     return Response.json({ error: "clip too large (max 512 KB)" }, { status: 413 });
 
   // Same text as the latest entry: do not duplicate (periodic phone automations resend the clipboard).
-  const latest = await prisma.clip.findFirst({ where: { userId: user.id }, orderBy: { id: "desc" } });
+  const latest = await latestClip(user.id);
   if (latest && latest.text === text) {
     return Response.json({ id: latest.id, createdAt: latest.createdAt, source: latest.source, duplicate: true }, { status: 200 });
   }
-  const clip = await prisma.clip.create({ data: { userId: user.id, text, source } });
+  const clip = await createClip(user.id, text, source);
   // trim history to MAX_CLIPS entries (bounded delete per request)
   const old = await prisma.clip.findMany({
     where: { userId: user.id },
@@ -56,7 +57,7 @@ export async function GET(req: Request) {
 
   const url = new URL(req.url);
   const since = Number(url.searchParams.get("since") ?? 0) || 0;
-  const clip = await prisma.clip.findFirst({ where: { userId: user.id }, orderBy: { id: "desc" } });
+  const clip = await latestClip(user.id);
   if (!clip || clip.id <= since) return new Response(null, { status: 204 });
 
   if (url.searchParams.get("format") === "json") {

@@ -3,10 +3,10 @@
 // and the share link is stored as a clipboard entry so every device gets it.
 // Responds with text/plain: the text itself, or the file URL.
 import { apiUser, unauthorized } from "@/lib/auth";
-import { prisma } from "@/lib/db";
 import { config } from "@/lib/config";
 import { cleanName, storeStream } from "@/lib/upload";
 import { preflight, withCors } from "@/lib/cors";
+import { createClip, latestClip } from "@/lib/clipcrypt";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -82,7 +82,7 @@ async function handle(req: Request) {
     const f = form.get("file");
     if (!(f instanceof File)) return plain("multipart field 'file' missing", 400);
     const file = await storeStream(user, cleanName(f.name), f.type, f.stream(), f.size);
-    await prisma.clip.create({ data: { userId: user.id, text: file.url, source: src } });
+    await createClip(user.id, file.url, src);
     return plain(file.url, 201);
   }
 
@@ -108,7 +108,7 @@ async function handle(req: Request) {
   const declared = Number(req.headers.get("content-length") ?? 0) || undefined;
   try {
     const file = await storeStream(user, name, effMime, body, declared);
-    await prisma.clip.create({ data: { userId: user.id, text: file.url, source: src } });
+    await createClip(user.id, file.url, src);
     return plain(file.url, 201);
   } catch (e) {
     const err = e as Error & { status?: number };
@@ -118,9 +118,9 @@ async function handle(req: Request) {
 
 /** Stores a text clip unless it equals the latest one (periodic automations resend the clipboard). */
 async function saveTextClip(userId: number, text: string, source: string) {
-  const latest = await prisma.clip.findFirst({ where: { userId }, orderBy: { id: "desc" }, select: { text: true } });
+  const latest = await latestClip(userId);
   if (latest && latest.text === text) return;
-  await prisma.clip.create({ data: { userId, text, source } });
+  await createClip(userId, text, source);
 }
 
 /** Reads up to `limit` bytes; returns the text when the whole body is small valid UTF-8, else a stream replaying everything. */

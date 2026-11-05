@@ -4,6 +4,7 @@ import { createMcpHandler, withMcpAuth } from "mcp-handler";
 import type { AuthInfo, McpServer } from "@modelcontextprotocol/server";
 import { z } from "zod";
 import { prisma } from "./db";
+import { createClip, latestClip, plainClip } from "./clipcrypt";
 import { config, fileUrl, maxFileLabel } from "./config";
 import { cleanName, fileJson, storeStream } from "./upload";
 import { deleteObject } from "./storage";
@@ -44,7 +45,7 @@ function registerTools(server: McpServer) {
     },
     async (_args, ctx) => {
       const user = await userFromAuth(ctx.http?.authInfo);
-      const clip = await prisma.clip.findFirst({ where: { userId: user.id }, orderBy: { id: "desc" } });
+      const clip = await latestClip(user.id);
       if (!clip) return text("The clipboard history is empty.");
       return json({ id: clip.id, text: clip.text, source: clip.source, createdAt: clip.createdAt });
     }
@@ -53,27 +54,25 @@ function registerTools(server: McpServer) {
   server.registerTool(
     "clipboard_history",
     {
-      title: "Search clipboard history",
+      title: "Clipboard history",
       description:
-        "Lists clipboard entries, newest first. Filter by device (source) and/or search text. Use `before` (an id) to page further back.",
+        "Lists clipboard entries, newest first. Filter by device (source). Use `before` (an id) to page further back.",
       inputSchema: z.object({
         limit: z.number().int().min(1).max(100).default(20).describe("How many entries (1-100)"),
         source: z.enum(SOURCES).optional().describe("Only entries from this device"),
-        q: z.string().max(200).optional().describe("Substring to search for"),
         before: z.number().int().optional().describe("Only entries with id lower than this (paging cursor)"),
       }),
       annotations: { readOnlyHint: true },
     },
-    async ({ limit, source, q, before }, ctx) => {
+    async ({ limit, source, before }, ctx) => {
       const user = await userFromAuth(ctx.http?.authInfo);
       const where = {
         userId: user.id,
         ...(source ? { source } : {}),
-        ...(q ? { text: { contains: q } } : {}),
         ...(before ? { id: { lt: before } } : {}),
       };
       const rows = await prisma.clip.findMany({ where, orderBy: { id: "desc" }, take: limit });
-      const items = rows.map((c) => ({ id: c.id, text: c.text.length > 4000 ? c.text.slice(0, 4000) + "…" : c.text, source: c.source, createdAt: c.createdAt }));
+      const items = rows.map(plainClip).map((c) => ({ id: c.id, text: c.text.length > 4000 ? c.text.slice(0, 4000) + "…" : c.text, source: c.source, createdAt: c.createdAt }));
       return json({ items, nextCursor: items.length === limit ? items[items.length - 1].id : null });
     }
   );
@@ -87,8 +86,8 @@ function registerTools(server: McpServer) {
     },
     async ({ text: t }, ctx) => {
       const user = await userFromAuth(ctx.http?.authInfo);
-      const latest = await prisma.clip.findFirst({ where: { userId: user.id }, orderBy: { id: "desc" } });
-      const clip = latest && latest.text === t ? latest : await prisma.clip.create({ data: { userId: user.id, text: t, source: SOURCE } });
+      const latest = await latestClip(user.id);
+      const clip = latest && latest.text === t ? latest : await createClip(user.id, t, SOURCE);
       return json({ id: clip.id, createdAt: clip.createdAt, duplicate: latest?.id === clip.id });
     }
   );
@@ -141,7 +140,7 @@ function registerTools(server: McpServer) {
         },
       });
       const file = await storeStream(user, safe, type, stream, buf.length);
-      if (push_link) await prisma.clip.create({ data: { userId: user.id, text: file.url, source: SOURCE } });
+      if (push_link) await createClip(user.id, file.url, SOURCE);
       return json({ ...file, sizeLabel: fmt(file.size) });
     }
   );

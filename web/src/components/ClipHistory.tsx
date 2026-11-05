@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Copy, Check, Trash, ArrowClockwise, MagnifyingGlass, DeviceMobile, WindowsLogo, AppleLogo, Terminal, Globe, Robot, X } from "@phosphor-icons/react";
+import { Copy, Check, Trash, ArrowClockwise, DeviceMobile, WindowsLogo, AppleLogo, Terminal, Globe, Robot } from "@phosphor-icons/react";
 
 type Clip = { id: number; text: string; source: string; createdAt: string };
 type Page = { items: Clip[]; nextCursor: number | null; total: number };
@@ -49,8 +49,6 @@ function CopyBtn({ text }: { text: string }) {
 
 export function ClipHistory() {
   const [source, setSource] = useState<string>("");
-  const [q, setQ] = useState("");
-  const [debouncedQ, setDebouncedQ] = useState("");
   const [items, setItems] = useState<Clip[] | null>(null);
   const [cursor, setCursor] = useState<number | null>(null);
   const [total, setTotal] = useState(0);
@@ -59,20 +57,14 @@ export function ClipHistory() {
   const [error, setError] = useState<string | null>(null);
   const newest = useRef(0);
 
-  useEffect(() => {
-    const t = setTimeout(() => setDebouncedQ(q.trim()), 250);
-    return () => clearTimeout(t);
-  }, [q]);
-
   const params = useCallback(
     (extra: Record<string, string | number> = {}) => {
       const p = new URLSearchParams({ limit: String(PAGE) });
       if (source) p.set("source", source);
-      if (debouncedQ) p.set("q", debouncedQ);
       for (const [k, v] of Object.entries(extra)) p.set(k, String(v));
       return p.toString();
     },
-    [source, debouncedQ]
+    [source]
   );
 
   const loadFirst = useCallback(async () => {
@@ -140,7 +132,7 @@ export function ClipHistory() {
   }
 
   async function clearAll() {
-    const scope = source || debouncedQ ? "the filtered entries" : "the whole clipboard history";
+    const scope = source ? "the filtered entries" : "the whole clipboard history";
     if (!confirm(`Delete ${scope}? This cannot be undone.`)) return;
     await fetch(`/api/clip/history?${params()}`, { method: "DELETE" });
     loadFirst();
@@ -168,15 +160,6 @@ export function ClipHistory() {
       </form>
 
       <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:items-center">
-        <div className="relative sm:w-64">
-          <MagnifyingGlass size={16} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-fog" />
-          <input className="input h-10 pl-9 pr-9" placeholder="Search history" value={q} onChange={(e) => setQ(e.target.value)} />
-          {q && (
-            <button type="button" aria-label="Clear search" onClick={() => setQ("")} className="absolute right-2 top-1/2 -translate-y-1/2 text-fog hover:text-paper">
-              <X size={14} />
-            </button>
-          )}
-        </div>
         <div className="flex flex-wrap gap-1.5">
           <button
             onClick={() => setSource("")}
@@ -201,7 +184,7 @@ export function ClipHistory() {
         {items === null && [0, 1, 2].map((i) => <li key={i} className="h-14 animate-pulse bg-panel/60" />)}
         {items?.length === 0 && (
           <li className="py-8 text-center text-sm text-fog">
-            {source || debouncedQ ? "Nothing matches this filter." : "Nothing yet. Copy something on your phone, Mac or Windows and it shows up here."}
+            {source ? "Nothing matches this filter." : "Nothing yet. Copy something on your phone, Mac or Windows and it shows up here."}
           </li>
         )}
         {items?.map((c) => (

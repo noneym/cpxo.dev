@@ -5,7 +5,7 @@ import { CodeBlock } from "@/components/CodeBlock";
 import { ClipDemo } from "@/components/ClipDemo";
 import { Reveal } from "@/components/Reveal";
 import { config, maxFileLabel } from "@/lib/config";
-import { ArrowRight, ClockCountdown, DeviceMobile, Terminal, WindowsLogo, AppleLogo, MagnifyingGlass, DownloadSimple, Robot, CursorClick, CloudArrowUp, LinkSimple, Notebook } from "@phosphor-icons/react/dist/ssr";
+import { ArrowRight, ClockCountdown, DeviceMobile, Terminal, WindowsLogo, AppleLogo, LockSimple, DownloadSimple, Robot, CursorClick, CloudArrowUp, LinkSimple, Notebook } from "@phosphor-icons/react/dist/ssr";
 
 export default function Home() {
   return (
@@ -150,7 +150,7 @@ curl -JLO https://cpxo.dev/f/k3v9xq2a`}
                 <Mark size={420} className="pointer-events-none absolute -bottom-24 -right-20 opacity-[0.12]" mono />
                 <h3 className="text-3xl font-bold tracking-[-0.03em] md:text-4xl">Universal clipboard history.</h3>
                 <p className="mt-3 max-w-[44ch] text-ink/80">
-                  Up to {config.maxClips.toLocaleString("en-US")} clips per account. Filter by iPhone, Mac, Windows or shell, search the text, pull any entry back to any device.
+                  Up to {config.maxClips.toLocaleString("en-US")} clips per account. Filter by iPhone, Mac, Windows or shell, pull any entry back to any device. Stored encrypted with AES-256.
                 </p>
                 <div className="mt-5 flex flex-wrap gap-2 text-xs font-semibold">
                   {[
@@ -158,7 +158,7 @@ curl -JLO https://cpxo.dev/f/k3v9xq2a`}
                     { Icon: AppleLogo, label: "Mac" },
                     { Icon: WindowsLogo, label: "Windows" },
                     { Icon: Terminal, label: "Shell" },
-                    { Icon: MagnifyingGlass, label: "Search" },
+                    { Icon: LockSimple, label: "Encrypted" },
                   ].map(({ Icon, label }) => (
                     <span key={label} className="inline-flex h-8 items-center gap-1.5 rounded-full bg-ink/10 px-3">
                       <Icon size={14} /> {label}

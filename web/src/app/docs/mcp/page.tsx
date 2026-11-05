@@ -22,7 +22,7 @@ export default async function McpDoc() {
         <p>Six tools, scoped to your account by your API token:</p>
         <ul className="list-disc space-y-1 pl-5 text-mist">
           <li><code>clipboard_latest</code>: the most recent clip from any device.</li>
-          <li><code>clipboard_history</code>: search and filter the history (iPhone, Mac, Windows, shell, web, AI).</li>
+          <li><code>clipboard_history</code>: the history newest first, filtered by device (iPhone, Mac, Windows, shell, web, AI).</li>
           <li><code>clipboard_push</code>: put text on your clipboard. Lands on Mac and Windows in seconds, on the iPhone with the Get shortcut.</li>
           <li><code>files_list</code>: your shared files with links, sizes and expiry.</li>
           <li><code>file_upload</code>: upload text or base64 content and get a 7-day share link (inline limit 25 MB).</li>
