@@ -59,6 +59,8 @@ export function Footer() {
           <Link href="/docs/mac" className="hover:text-paper">Mac app</Link>
           <Link href="/docs/mcp" className="hover:text-paper">MCP</Link>
           <a href="https://github.com/noneym/cpxo.dev" className="hover:text-paper">GitHub</a>
+          <Link href="/privacy" className="hover:text-paper">Privacy</Link>
+          <Link href="/terms" className="hover:text-paper">Terms</Link>
         </div>
       </div>
     </footer>
