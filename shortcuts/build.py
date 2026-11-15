@@ -131,6 +131,8 @@ def send_to_windows():
     clip_uid = str(uuid.uuid4()).upper()
     dl_uid = str(uuid.uuid4()).upper()
     group = str(uuid.uuid4()).upper()
+    text_uid = str(uuid.uuid4()).upper()
+    link_group = str(uuid.uuid4()).upper()
     actions = token_block() + [
         # payload = Shortcut Input when invoked from the Share Sheet, else the clipboard
         action(
@@ -145,6 +147,20 @@ def send_to_windows():
         action("is.workflow.actions.getclipboard", UUID=clip_uid),
         action("is.workflow.actions.setvariable", WFVariableName="payload", WFInput=attachment(output(clip_uid, "Clipboard"))),
         action("is.workflow.actions.conditional", GroupingIdentifier=group, WFControlFlowMode=2),
+        # A link arrives as a URL item, and a URL sent as a File body is fetched first: the page's
+        # HTML would be posted instead of the link. So a payload whose text starts with "http"
+        # is replaced by that text and goes out as text/plain.
+        action("is.workflow.actions.gettext", UUID=text_uid, WFTextActionText=text("￼", {0: var("payload")})),
+        action(
+            "is.workflow.actions.conditional",
+            GroupingIdentifier=link_group,
+            WFControlFlowMode=0,
+            WFCondition=8,  # begins with
+            WFConditionalActionString="http",
+            WFInput={"Type": "Variable", "Variable": attachment(output(text_uid, "Text"))},
+        ),
+        action("is.workflow.actions.setvariable", WFVariableName="payload", WFInput=attachment(output(text_uid, "Text"))),
+        action("is.workflow.actions.conditional", GroupingIdentifier=link_group, WFControlFlowMode=2),
         # no Content-Type header on purpose: Shortcuts sets it from the payload (text/plain, image/jpeg, ...)
         action(
             "is.workflow.actions.downloadurl",

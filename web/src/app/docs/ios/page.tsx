@@ -71,7 +71,10 @@ export default async function IosDoc() {
         <Actions
           items={[
             "<strong>Get Clipboard</strong>",
-            `<strong>Get Contents of URL</strong>. URL: <code>${base}/api/drop?t=${T}</code>. Tap the arrow to expand: Method <strong>POST</strong>, Request Body <strong>File</strong>, pick the <strong>Clipboard</strong> variable. Add header <code>X-Source</code> = <code>ios</code>. Text becomes a clip; a photo or file is uploaded and the link is returned.`,
+            "<strong>Set Variable</strong>: name <code>payload</code>, value <strong>Clipboard</strong>.",
+            "<strong>Text</strong> containing only the <strong>Clipboard</strong> variable.",
+            "<strong>If</strong> <strong>Text</strong> <strong>begins with</strong> <code>http</code>: inside it, <strong>Set Variable</strong> <code>payload</code> to <strong>Text</strong>. Delete the Otherwise branch. Without this a copied link is sent as the HTML of its page instead of the link.",
+            `After End If, <strong>Get Contents of URL</strong>. URL: <code>${base}/api/drop?t=${T}</code>. Tap the arrow to expand: Method <strong>POST</strong>, Request Body <strong>File</strong>, pick the <strong>payload</strong> variable. Add header <code>X-Source</code> = <code>ios</code>. Text becomes a clip; a photo or file is uploaded and the link is returned.`,
             "<strong>Copy to Clipboard</strong> with the <strong>Contents of URL</strong> variable (so a file link lands on your iPhone clipboard too).",
             "<strong>Show Notification</strong> with the <strong>Contents of URL</strong> variable (optional).",
           ]}
