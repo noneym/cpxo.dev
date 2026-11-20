@@ -3,7 +3,7 @@ import { CodeBlock } from "@/components/CodeBlock";
 import { currentUser } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { config } from "@/lib/config";
-import { signedShortcutsAvailable } from "@/lib/shortcuts";
+import { ICLOUD_LINKS, signedShortcutsAvailable } from "@/lib/shortcuts";
 
 export const dynamic = "force-dynamic";
 
@@ -27,14 +27,14 @@ export default async function IosDoc() {
             {[
               {
                 n: "1",
-                href: "/s/send",
+                href: ICLOUD_LINKS.send ?? "/s/send",
                 cta: "Add: Send to Windows",
                 title: "Send to Windows",
                 body: "Sends whatever is on the clipboard. Text becomes a clip; a copied photo or file is uploaded and its link becomes the clip, copied back to your iPhone too. Also in the Share Sheet for Photos and Files.",
               },
               {
                 n: "2",
-                href: "/s/get",
+                href: ICLOUD_LINKS.get ?? "/s/get",
                 cta: "Add: Get from Windows",
                 title: "Get from Windows",
                 body: "Puts the latest clip from your Mac, Windows or shell on the iPhone clipboard.",
@@ -47,7 +47,7 @@ export default async function IosDoc() {
                   <p className="text-sm">{it.body}</p>
                 </div>
                 {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
-                <a href={it.href} className="btn btn-primary shrink-0 self-start sm:self-auto" download>{it.cta}</a>
+                <a href={it.href} className="btn btn-primary shrink-0 self-start sm:self-auto" download={it.href.startsWith("/") || undefined}>{it.cta}</a>
               </li>
             ))}
           </ol>
